@@ -294,6 +294,7 @@
     align-items:center;
     gap:18px;
   }
+  .confirmation[hidden]{ display:none; }
   .confirmation__icon{
     width:56px; height:56px;
     border:1px solid var(--gold);
@@ -421,6 +422,12 @@
     text-decoration:none; transition:color .3s;
   }
   .nav__drawer a:hover{ color:var(--gold-soft); }
+  .nav__drawer .btn{
+    font-family:var(--font-body);
+    font-size:.85rem;
+    letter-spacing:.12em;
+    align-self:stretch;
+  }
   .nav__drawer-close{
     position:absolute; top:24px; right:24px; background:none; border:none;
     color:var(--text-light); font-size:1.6rem; cursor:pointer; line-height:1;
