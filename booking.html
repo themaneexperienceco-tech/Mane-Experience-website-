@@ -582,7 +582,11 @@
       <p>This is a booking <em>request</em>, not a confirmed appointment. We'll review your details and follow up to confirm your time.</p>
     </div>
 
-    <form id="bookingForm" class="booking-card reveal" novalidate>
+    <form id="bookingForm" name="bookingForm" class="booking-card reveal" novalidate netlify data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="bookingForm">
+      <p style="position:absolute;left:-9999px;" aria-hidden="true">
+        <label>Don't fill this out if you're human: <input name="bot-field" tabindex="-1" autocomplete="off"></label>
+      </p>
 
       <!-- CONTACT INFO -->
       <div class="form-group">
@@ -1174,10 +1178,18 @@
     emailLink.setAttribute('href', mailtoLink);
 
     /* --------------------------------------------------------
-       SUBMIT TO FORMSPREE
+       SUBMIT TO FORMSPREE (primary) + NETLIFY FORMS (backup copy)
     -------------------------------------------------------- */
     submitBtn.disabled = true;
     submitBtn.textContent = "Sending…";
+
+    // Fire-and-forget backup copy to Netlify Forms — doesn't block
+    // or fail the submission if it errors, Formspree is the primary path.
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data).toString()
+    }).catch(() => {});
 
     try {
       const response = await fetch(FORMSPREE_ENDPOINT, {
