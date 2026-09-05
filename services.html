@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Services — The Mane Experience</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================================
+     TOKENS
+  ============================================================ */
+  :root{
+    --cream:        #FAF6EF;
+    --beige:        #EFE3D1;
+    --ink:          #221E19;
+    --ink-soft:     #2E2922;
+    --white:        #FFFFFF;
+    --gold:         #C8A368;
+    --gold-soft:    #E6D3B3;
+    --gold-deep:    #A9824A;
+    --text-dark:    #2E2922;
+    --text-muted:   #6E6358;
+    --text-light:   #F7F1E6;
+
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body:    'Jost', -apple-system, sans-serif;
+
+    --max-width: 1180px;
+    --radius:    14px;
+
+    --ease: cubic-bezier(.22,.61,.36,1);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html{ scroll-behavior:smooth; }
+
+  body{
+    font-family:var(--font-body);
+    color:var(--text-dark);
+    background:var(--cream);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px; /* room for sticky mobile bar */
+  }
+
+  img,svg{ display:block; max-width:100%; }
+
+  .wrap{
+    max-width:var(--max-width);
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  .eyebrow{
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:.72rem;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:var(--gold-deep);
+  }
+
+  h1,h2,h3{
+    font-family:var(--font-display);
+    font-weight:500;
+    letter-spacing:.01em;
+  }
+
+  .accent{
+    font-style:italic;
+    color:var(--gold-deep);
+  }
+
+  /* ============================================================
+     REVEAL ON SCROLL
+  ============================================================ */
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .9s var(--ease), transform .9s var(--ease);
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+    html{ scroll-behavior:auto; }
+  }
+
+  /* ============================================================
+     MANE LINE DIVIDER — signature element
+     A continuous strand motif that threads between sections,
+     echoing the wave of hair from style to style.
+  ============================================================ */
+  .mane-divider{
+    width:100%;
+    height:46px;
+    overflow:hidden;
+  }
+  .mane-divider svg{ width:100%; height:100%; }
+  .mane-divider path{
+    fill:none;
+    stroke:var(--gold);
+    stroke-width:1.5;
+    stroke-linecap:round;
+  }
+  .mane-divider--flip svg{ transform:scaleY(-1); }
+  .mane-divider--ink path{ stroke:var(--gold-soft); }
+
+  .mane-divider--draw path{
+    stroke-dasharray:1400;
+    stroke-dashoffset:1400;
+    transition:stroke-dashoffset 2.2s var(--ease);
+  }
+  .mane-divider--draw.is-visible path{
+    stroke-dashoffset:0;
+  }
+
+  /* ============================================================
+     BUTTONS
+  ============================================================ */
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    gap:.5em;
+    font-family:var(--font-body);
+    font-weight:500;
+    font-size:.85rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    text-decoration:none;
+    padding:1em 2.2em;
+    border-radius:2px;
+    border:1px solid transparent;
+    cursor:pointer;
+    transition:background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease), transform .35s var(--ease);
+  }
+  .btn:active{ transform:scale(.98); }
+
+  .btn--gold{
+    background:var(--gold);
+    color:var(--ink);
+  }
+  .btn--gold:hover{ background:var(--gold-deep); }
+
+  .btn--outline-light{
+    background:transparent;
+    color:var(--text-light);
+    border-color:rgba(247,241,230,.45);
+  }
+  .btn--outline-light:hover{
+    border-color:var(--gold);
+    color:var(--gold-soft);
+  }
+
+  .btn--outline-dark{
+    background:transparent;
+    color:var(--ink);
+    border-color:var(--ink);
+  }
+  .btn--outline-dark:hover{
+    background:var(--ink);
+    color:var(--text-light);
+  }
+
+  /* ============================================================
+     HERO
+  ============================================================ */
+  .hero{
+    background:var(--ink);
+    color:var(--text-light);
+    min-height:92vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+    padding:120px 24px 80px;
+  }
+
+  .hero__bg-line{
+    position:absolute;
+    inset:0;
+    opacity:.18;
+    pointer-events:none;
+  }
+  .hero__bg-line svg{ width:100%; height:100%; }
+  .hero__bg-line path{
+    fill:none;
+    stroke:var(--gold);
+    stroke-width:1;
+  }
+
+  .hero__content{
+    position:relative;
+    z-index:1;
+    max-width:760px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:28px;
+  }
+
+  .hero__eyebrow{
+    font-family:var(--font-body);
+    font-size:.72rem;
+    letter-spacing:.34em;
+    text-transform:uppercase;
+    color:var(--gold-soft);
+  }
+
+  .hero h1{
+    font-size:clamp(2.6rem, 7vw, 4.6rem);
+    line-height:1.12;
+    font-weight:500;
+  }
+
+  .hero__sub{
+    font-size:1.05rem;
+    color:rgba(247,241,230,.78);
+    max-width:46ch;
+    font-weight:300;
+  }
+
+  .hero__actions{
+    margin-top:8px;
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  /* ============================================================
+     SECTION SPACING
+  ============================================================ */
+  section{ padding:88px 0; }
+  .section-head{
+    text-align:center;
+    max-width:640px;
+    margin:0 auto 56px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+  }
+  .section-head h2{
+    font-size:clamp(2.1rem, 5vw, 3rem);
+  }
+  .section-head p{
+    color:var(--text-muted);
+    font-weight:300;
+    font-size:1.02rem;
+  }
+
+  /* ============================================================
+     WHY CHOOSE
+  ============================================================ */
+  .why{ background:var(--cream); }
+
+  .why__grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:28px;
+  }
+
+  .why__card{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:36px 28px;
+    border-top:2px solid var(--gold);
+    box-shadow:0 18px 40px -28px rgba(34,30,25,.35);
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+  }
+  .why__card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 26px 50px -28px rgba(34,30,25,.45);
+  }
+
+  .why__icon{
+    width:40px; height:40px;
+    margin-bottom:18px;
+    color:var(--gold-deep);
+  }
+  .why__icon svg{ width:100%; height:100%; stroke:currentColor; fill:none; stroke-width:1.3; }
+
+  .why__card h3{
+    font-size:1.35rem;
+    margin-bottom:8px;
+    font-weight:600;
+  }
+  .why__card p{
+    color:var(--text-muted);
+    font-size:.96rem;
+    font-weight:300;
+  }
+
+  /* ============================================================
+     SERVICES — menu-ticket cards
+  ============================================================ */
+  .services{ background:var(--beige); }
+
+  .services__grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:28px;
+  }
+
+  .service-card{
+    background:var(--white);
+    border-radius:var(--radius);
+    overflow:hidden;
+    box-shadow:0 18px 40px -28px rgba(34,30,25,.3);
+    display:flex;
+    flex-direction:column;
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+  }
+  .service-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 26px 54px -26px rgba(34,30,25,.4);
+  }
+
+  .service-card__head{
+    padding:28px 28px 22px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:16px;
+  }
+
+  .service-card__title{
+    font-size:1.55rem;
+    font-weight:600;
+    line-height:1.2;
+  }
+
+  .service-card__price{
+    font-family:var(--font-display);
+    font-size:1.9rem;
+    font-weight:600;
+    color:var(--gold-deep);
+    white-space:nowrap;
+  }
+
+  .service-card__divider{
+    border:none;
+    border-top:1px dashed var(--gold-soft);
+    margin:0 28px;
+  }
+
+  .service-card__body{
+    padding:22px 28px 28px;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    flex:1;
+  }
+
+  .service-card__desc{
+    font-weight:300;
+    color:var(--text-muted);
+    font-size:.95rem;
+  }
+
+  .service-card__meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px 12px;
+    font-size:.78rem;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--gold-deep);
+    font-weight:500;
+  }
+  .service-card__meta span{ white-space:nowrap; }
+  .service-card__meta span:not(:last-child)::after{
+    content:'·';
+    margin-left:12px;
+    color:var(--gold-soft);
+  }
+
+  .service-card__includes{
+    margin-top:auto;
+    padding-top:14px;
+    border-top:1px solid var(--cream);
+    font-size:.88rem;
+    color:var(--text-muted);
+    font-weight:300;
+  }
+  .service-card__includes strong{
+    color:var(--text-dark);
+    font-weight:500;
+    display:block;
+    margin-bottom:4px;
+    font-size:.78rem;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+  }
+
+  /* ============================================================
+     BEFORE YOUR APPOINTMENT — ink panel
+  ============================================================ */
+  .prep{
+    background:var(--ink);
+    color:var(--text-light);
+  }
+  .prep .section-head p{ color:rgba(247,241,230,.7); }
+  .prep .eyebrow{ color:var(--gold-soft); }
+
+  .prep__layout{
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:48px;
+    align-items:center;
+  }
+
+  .prep__list{
+    list-style:none;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+  }
+  .prep__list li{
+    display:flex;
+    align-items:flex-start;
+    gap:16px;
+    font-size:1.05rem;
+    font-weight:300;
+  }
+  .prep__check{
+    flex:none;
+    width:28px; height:28px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--gold);
+  }
+  .prep__check svg{ width:13px; height:13px; }
+
+  .prep__note{
+    background:rgba(247,241,230,.05);
+    border:1px solid rgba(200,163,104,.35);
+    border-radius:var(--radius);
+    padding:32px;
+  }
+  .prep__note h3{
+    font-size:1.4rem;
+    margin-bottom:12px;
+    color:var(--gold-soft);
+  }
+  .prep__note p{
+    font-weight:300;
+    font-size:.95rem;
+    color:rgba(247,241,230,.78);
+  }
+
+  /* ============================================================
+     ADDITIONAL FEES
+  ============================================================ */
+  .fees{ background:var(--cream); }
+
+  .fees__grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+  }
+
+  .fee-card{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:28px 22px;
+    text-align:center;
+    border:1px solid var(--gold-soft);
+  }
+  .fee-card__amount{
+    font-family:var(--font-display);
+    font-size:1.6rem;
+    font-weight:600;
+    color:var(--gold-deep);
+    margin-bottom:6px;
+  }
+  .fee-card__label{
+    font-size:.78rem;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    font-weight:500;
+  }
+
+  .fees__disclaimer{
+    text-align:center;
+    margin-top:32px;
+    font-size:.85rem;
+    color:var(--text-muted);
+    font-weight:300;
+    font-style:italic;
+  }
+
+  /* ============================================================
+     THE EXPERIENCE
+  ============================================================ */
+  .experience{ background:var(--beige); }
+
+  .experience__layout{
+    display:grid;
+    grid-template-columns:1fr 1.2fr;
+    gap:56px;
+    align-items:center;
+  }
+
+  .experience__headline{
+    font-size:clamp(2.4rem, 6vw, 3.6rem);
+    line-height:1.15;
+  }
+
+  .experience__body{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    font-weight:300;
+    color:var(--text-dark);
+  }
+  .experience__body p strong{
+    font-weight:600;
+    color:var(--gold-deep);
+    font-style:italic;
+    font-family:var(--font-display);
+  }
+
+  /* ============================================================
+     TESTIMONIALS
+  ============================================================ */
+  .testimonials{ background:var(--cream); }
+
+  .testimonials__grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:28px;
+  }
+
+  .testimonial-card{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:36px 30px;
+    box-shadow:0 18px 40px -28px rgba(34,30,25,.3);
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+  .testimonial-card__stars{
+    color:var(--gold);
+    font-size:1rem;
+    letter-spacing:.18em;
+  }
+  .testimonial-card__quote{
+    font-family:var(--font-display);
+    font-style:italic;
+    font-size:1.25rem;
+    line-height:1.5;
+    color:var(--text-dark);
+  }
+  .testimonial-card__name{
+    font-size:.8rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--text-muted);
+    font-weight:500;
+  }
+
+  /* ============================================================
+     FINAL CTA
+  ============================================================ */
+  .cta{
+    background:var(--ink);
+    color:var(--text-light);
+    text-align:center;
+    padding:110px 0;
+  }
+  .cta__inner{
+    max-width:640px;
+    margin:0 auto;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+  .cta h2{
+    font-size:clamp(2.4rem, 6vw, 3.8rem);
+  }
+  .cta p{
+    font-weight:300;
+    font-size:1.05rem;
+    color:rgba(247,241,230,.78);
+    max-width:46ch;
+  }
+  .cta__actions{
+    margin-top:8px;
+    display:flex;
+    gap:16px;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+
+  /* ============================================================
+     STICKY MOBILE BOOKING BAR
+  ============================================================ */
+  .sticky-bar{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    z-index:50;
+    background:var(--gold);
+    display:none;
+  }
+  .sticky-bar a{
+    display:block;
+    width:100%;
+    text-align:center;
+    padding:16px 0;
+    font-family:var(--font-body);
+    font-weight:600;
+    font-size:.82rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink);
+    text-decoration:none;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+  ============================================================ */
+  @media (max-width: 880px){
+    .why__grid,
+    .services__grid{ grid-template-columns:1fr; }
+
+    .prep__layout,
+    .experience__layout{
+      grid-template-columns:1fr;
+      gap:32px;
+    }
+    .experience__layout{ text-align:left; }
+
+    .fees__grid{ grid-template-columns:repeat(2,1fr); }
+
+    .testimonials__grid{ grid-template-columns:1fr; }
+
+    section{ padding:64px 0; }
+    .hero{ min-height:88vh; padding:110px 24px 90px; }
+
+    .sticky-bar{ display:block; }
+    body{ padding-bottom:64px; }
+  }
+
+  @media (min-width: 881px){
+    body{ padding-bottom:0; }
+  }
+
+  @media (max-width: 480px){
+    .fees__grid{ grid-template-columns:1fr 1fr; }
+    .service-card__head{ flex-direction:column; gap:6px; }
+    .service-card__price{ font-size:1.6rem; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<header class="hero">
+  <div class="hero__bg-line" aria-hidden="true">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="none">
+      <path d="M-50,650 C150,500 350,750 600,600 C850,450 1050,700 1300,550"/>
+      <path d="M-50,200 C200,80 400,300 650,180 C900,60 1100,260 1300,150"/>
+    </svg>
+  </div>
+  <div class="hero__content">
+    <span class="hero__eyebrow">The Mane Experience</span>
+    <h1>Healthy Hair. Intentional Care. <span class="accent">Elevated Beauty.</span></h1>
+    <p class="hero__sub">
+      More than a hairstyle — every visit is curated around the health of your hair,
+      the comfort of your time in the chair, and the confidence you carry out the door.
+    </p>
+    <div class="hero__actions">
+      <a href="#book" class="btn btn--gold">Book Now</a>
+    </div>
+  </div>
+</header>
+
+<!-- ============================================================
+     WHY CHOOSE THE MANE EXPERIENCE
+============================================================ -->
+<section class="why">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Why The Mane Experience</span>
+      <h2>Care That Goes Beyond the Chair</h2>
+      <p>Every appointment begins with a conversation and ends with a result built to last — for your hair and your confidence.</p>
+    </div>
+
+    <div class="why__grid">
+
+      <div class="why__card reveal">
+        <div class="why__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M8 9c0-2.2 1.8-4 4-4s4 1.8 4 4-1.8 4-4 4-4-1.8-4-4z"/><path d="M4 20c0-3.3 3.6-6 8-6s8 2.7 8 6"/></svg>
+        </div>
+        <h3>Personalized Consultations</h3>
+        <p>We start with you — your hair's history, your goals, and the look you're carrying into your week. Every install is planned, not improvised.</p>
+      </div>
+
+      <div class="why__card reveal">
+        <div class="why__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 21c4-3 7-6.5 7-11a7 7 0 0 0-14 0c0 4.5 3 8 7 11z"/><path d="M12 12v6"/></svg>
+        </div>
+        <h3>Healthy Hair, First</h3>
+        <p>Protective styling is the priority behind every service. We choose techniques and tension that protect your natural hair underneath.</p>
+      </div>
+
+      <div class="why__card reveal">
+        <div class="why__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        </div>
+        <h3>A Luxury Experience</h3>
+        <p>From the moment you sit down, the space, the pace, and the attention are designed to feel like a retreat — not a rush.</p>
+      </div>
+
+      <div class="why__card reveal">
+        <div class="why__icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M12 3l2.5 5 5.5.8-4 4 1 5.5L12 16l-5 2.3 1-5.5-4-4 5.5-.8z"/></svg>
+        </div>
+        <h3>Confidence That Lasts</h3>
+        <p>A great install carries you through your week. Each service includes styling so you leave ready for whatever's next.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="mane-divider mane-divider--draw reveal" aria-hidden="true">
+  <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+    <path d="M0,30 C150,4 300,56 450,30 C600,4 750,56 900,30 C1050,4 1150,52 1200,30"/>
+  </svg>
+</div>
+
+<!-- ============================================================
+     SERVICES
+============================================================ -->
+<section class="services" id="services">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Services &amp; Pricing</span>
+      <h2>Find Your Install</h2>
+      <p>Every service below includes a consultation and basic styling — your appointment is reserved just for you.</p>
+    </div>
+
+    <div class="services__grid">
+
+      <article class="service-card reveal">
+        <div class="service-card__head">
+          <h3 class="service-card__title">Frontal Wig Install</h3>
+          <span class="service-card__price">$300</span>
+        </div>
+        <hr class="service-card__divider">
+        <div class="service-card__body">
+          <p class="service-card__desc">A luxury frontal install designed for a flawless, natural finish with styling customized to you.</p>
+          <div class="service-card__meta">
+            <span>3.5 Hours</span>
+          </div>
+          <div class="service-card__includes">
+            <strong>Includes</strong>
+            Consultation · Install · Basic Styling
+          </div>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-card__head">
+          <h3 class="service-card__title">Closure Wig Install</h3>
+          <span class="service-card__price">$250</span>
+        </div>
+        <hr class="service-card__divider">
+        <div class="service-card__body">
+          <p class="service-card__desc">A natural, protective install offering everyday versatility without sacrificing elegance.</p>
+          <div class="service-card__meta">
+            <span>2.5 Hours</span>
+          </div>
+          <div class="service-card__includes">
+            <strong>Includes</strong>
+            Consultation · Install · Basic Styling
+          </div>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-card__head">
+          <h3 class="service-card__title">Traditional Sew-In</h3>
+          <span class="service-card__price">$275</span>
+        </div>
+        <hr class="service-card__divider">
+        <div class="service-card__body">
+          <p class="service-card__desc">A timeless sew-in that blends seamlessly with your natural hair while keeping it protected underneath.</p>
+          <div class="service-card__meta">
+            <span>3 Hours</span>
+          </div>
+          <div class="service-card__includes">
+            <strong>Includes</strong>
+            Consultation · Install · Basic Styling
+          </div>
+        </div>
+      </article>
+
+      <article class="service-card reveal">
+        <div class="service-card__head">
+          <h3 class="service-card__title">Quick Weave</h3>
+          <span class="service-card__price">$200</span>
+        </div>
+        <hr class="service-card__divider">
+        <div class="service-card__body">
+          <p class="service-card__desc">A polished, protective style that delivers a finished look without sacrificing quality or care.</p>
+          <div class="service-card__meta">
+            <span>2 Hours</span>
+          </div>
+          <div class="service-card__includes">
+            <strong>Includes</strong>
+            Consultation · Install · Basic Styling
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BEFORE YOUR APPOINTMENT
+============================================================ -->
+<section class="prep">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-bottom:48px;">
+      <span class="eyebrow">Before You Arrive</span>
+      <h2>Come As You Are — Just Ready</h2>
+    </div>
+
+    <div class="prep__layout">
+      <ul class="prep__list reveal">
+        <li>
+          <span class="prep__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Hair arrives <strong>clean</strong> — freshly washed and free of product buildup.</span>
+        </li>
+        <li>
+          <span class="prep__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Hair arrives <strong>blow-dried</strong> — fully dry from root to end.</span>
+        </li>
+        <li>
+          <span class="prep__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+          <span>Hair arrives <strong>fully detangled</strong> — smooth and snag-free from root to end.</span>
+        </li>
+      </ul>
+
+      <div class="prep__note reveal">
+        <h3>A Note on Preparation</h3>
+        <p>
+          Coming in clean, dry, and detangled protects your appointment time and lets us focus
+          fully on your install. If hair arrives unprepared, additional time and a detangling
+          fee may apply — we'll always let you know before any work begins.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ADDITIONAL FEES
+============================================================ -->
+<section class="fees">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Good To Know</span>
+      <h2>Additional Fees</h2>
+      <p>Applied only when they're relevant to your appointment.</p>
+    </div>
+
+    <div class="fees__grid">
+      <div class="fee-card reveal">
+        <div class="fee-card__amount">$25+</div>
+        <div class="fee-card__label">Travel Fee</div>
+      </div>
+      <div class="fee-card reveal">
+        <div class="fee-card__amount">$15</div>
+        <div class="fee-card__label">Late (15+ min)</div>
+      </div>
+      <div class="fee-card reveal">
+        <div class="fee-card__amount">$50</div>
+        <div class="fee-card__label">Same-Day / Squeeze-In</div>
+      </div>
+      <div class="fee-card reveal">
+        <div class="fee-card__amount">$25+</div>
+        <div class="fee-card__label">Detangling</div>
+      </div>
+    </div>
+
+    <p class="fees__disclaimer reveal">Fees are assessed only when applicable.</p>
+  </div>
+</section>
+
+<div class="mane-divider mane-divider--flip" aria-hidden="true">
+  <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+    <path d="M0,30 C150,4 300,56 450,30 C600,4 750,56 900,30 C1050,4 1150,52 1200,30"/>
+  </svg>
+</div>
+
+<!-- ============================================================
+     THE EXPERIENCE
+============================================================ -->
+<section class="experience">
+  <div class="wrap">
+    <div class="experience__layout">
+      <div class="reveal">
+        <span class="eyebrow">The Experience</span>
+        <h2 class="experience__headline">From Consultation <span class="accent">to Final Style</span></h2>
+      </div>
+      <div class="experience__body reveal">
+        <p>
+          Your appointment begins with a real conversation — about your hair, your routine,
+          and the look you want to walk out with. From there, every step is unhurried.
+        </p>
+        <p>
+          You're invited to settle in. <strong>Relax, and let us take it from here</strong> —
+          we'll handle the details so you can simply enjoy the process.
+        </p>
+        <p>
+          By the time you're in the chair for final styling, the work is already done.
+          What's left is the reveal — and the confidence that comes with it.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+============================================================ -->
+<section class="testimonials">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Client Stories</span>
+      <h2>In Their Words</h2>
+    </div>
+
+    <div class="testimonials__grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-card__stars">★★★★★</div>
+        <p class="testimonial-card__quote">"I left feeling beautiful, confident, and cared for."</p>
+        <div class="testimonial-card__name">— Client, Frontal Install</div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-card__stars">★★★★★</div>
+        <p class="testimonial-card__quote">"The whole appointment felt like a reset — I walked out a different person."</p>
+        <div class="testimonial-card__name">— Client, Sew-In</div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-card__stars">★★★★★</div>
+        <p class="testimonial-card__quote">"Every detail was thought through. This is what 'luxury' actually means."</p>
+        <div class="testimonial-card__name">— Client, Closure Install</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     FINAL CTA
+============================================================ -->
+<section class="cta" id="book">
+  <div class="wrap">
+    <div class="cta__inner reveal">
+      <span class="eyebrow" style="color:var(--gold-soft);">Reserve Your Visit</span>
+      <h2>Ready For Your <span class="accent">Mane Experience?</span></h2>
+      <p>Your next appointment is more than a hairstyle — it's an investment in yourself.</p>
+      <div class="cta__actions">
+        <a href="#" class="btn btn--gold">Book Appointment</a>
+        <a href="#" class="btn btn--outline-light">Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STICKY MOBILE BOOKING BAR
+============================================================ -->
+<div class="sticky-bar">
+  <a href="#book">Book Your Mane Experience</a>
+</div>
+
+<script>
+  // Reveal-on-scroll
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  revealEls.forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>

@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Book — The Mane Experience</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+
+  /* ============================================================
+     TOKENS — matched to The Mane Experience site
+  ============================================================ */
+  :root{
+    --cream:        #FAF6EF;
+    --beige:        #EFE3D1;
+    --ink:          #221E19;
+    --white:        #FFFFFF;
+    --gold:         #C8A368;
+    --gold-soft:    #E6D3B3;
+    --gold-deep:    #A9824A;
+    --text-dark:    #2E2922;
+    --text-muted:   #6E6358;
+    --text-light:   #F7F1E6;
+
+    --font-display: 'Cormorant Garamond', Georgia, serif;
+    --font-body:    'Jost', -apple-system, sans-serif;
+
+    --max-width: 1180px;
+    --radius:    14px;
+    --ease: cubic-bezier(.22,.61,.36,1);
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+
+  body{
+    font-family:var(--font-body);
+    color:var(--text-dark);
+    background:var(--cream);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:64px;
+  }
+
+  img,svg{ display:block; max-width:100%; }
+
+  .wrap{ max-width:var(--max-width); margin:0 auto; padding:0 24px; }
+
+  .eyebrow{
+    font-weight:600;
+    font-size:.72rem;
+    letter-spacing:.28em;
+    text-transform:uppercase;
+    color:var(--gold-deep);
+  }
+
+  h1,h2,h3{ font-family:var(--font-display); font-weight:500; letter-spacing:.01em; }
+  .accent{ font-style:italic; color:var(--gold-deep); }
+
+  /* ============================================================
+     REVEAL ON SCROLL
+  ============================================================ */
+  .reveal{
+    opacity:0; transform:translateY(28px);
+    transition:opacity .9s var(--ease), transform .9s var(--ease);
+  }
+  .reveal.is-visible{ opacity:1; transform:translateY(0); }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+    html{ scroll-behavior:auto; }
+  }
+
+  /* ============================================================
+     MANE LINE DIVIDER — signature element
+  ============================================================ */
+  .mane-divider{ width:100%; height:46px; overflow:hidden; }
+  .mane-divider svg{ width:100%; height:100%; }
+  .mane-divider path{ fill:none; stroke:var(--gold); stroke-width:1.5; stroke-linecap:round; }
+  .mane-divider--flip svg{ transform:scaleY(-1); }
+  .mane-divider--ink path{ stroke:var(--gold-soft); }
+  .mane-divider--draw path{
+    stroke-dasharray:1400; stroke-dashoffset:1400;
+    transition:stroke-dashoffset 2.2s var(--ease);
+  }
+  .mane-divider--draw.is-visible path{ stroke-dashoffset:0; }
+
+  /* ============================================================
+     BUTTONS
+  ============================================================ */
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:.5em;
+    font-family:var(--font-body); font-weight:500; font-size:.85rem;
+    letter-spacing:.12em; text-transform:uppercase; text-decoration:none;
+    padding:1em 2.2em; border-radius:2px; border:1px solid transparent;
+    cursor:pointer;
+    transition:background .35s var(--ease), color .35s var(--ease), border-color .35s var(--ease), transform .35s var(--ease);
+  }
+  .btn:active{ transform:scale(.98); }
+  .btn--gold{ background:var(--gold); color:var(--ink); }
+  .btn--gold:hover{ background:var(--gold-deep); }
+  .btn--outline-light{ background:transparent; color:var(--text-light); border-color:rgba(247,241,230,.45); }
+  .btn--outline-light:hover{ border-color:var(--gold); color:var(--gold-soft); }
+  .btn--full{ width:100%; }
+
+  /* ============================================================
+     HERO
+  ============================================================ */
+  .hero{
+    background:var(--ink); color:var(--text-light);
+    min-height:62vh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; text-align:center;
+    position:relative; overflow:hidden; padding:120px 24px 80px;
+  }
+  .hero__bg-line{ position:absolute; inset:0; opacity:.18; pointer-events:none; }
+  .hero__bg-line svg{ width:100%; height:100%; }
+  .hero__bg-line path{ fill:none; stroke:var(--gold); stroke-width:1; }
+
+  .hero__content{
+    position:relative; z-index:1; max-width:680px;
+    display:flex; flex-direction:column; align-items:center; gap:22px;
+  }
+  .hero__eyebrow{ font-size:.72rem; letter-spacing:.34em; text-transform:uppercase; color:var(--gold-soft); }
+  .hero h1{ font-size:clamp(2.4rem, 7vw, 4.2rem); line-height:1.12; font-weight:500; }
+  .hero__sub{ font-size:1.02rem; color:rgba(247,241,230,.78); max-width:46ch; font-weight:300; }
+
+  /* ============================================================
+     SECTION SPACING
+  ============================================================ */
+  section{ padding:80px 0; }
+  .section-head{
+    text-align:center; max-width:640px; margin:0 auto 48px;
+    display:flex; flex-direction:column; gap:14px;
+  }
+  .section-head h2{ font-size:clamp(2.1rem, 5vw, 3rem); }
+  .section-head p{ color:var(--text-muted); font-weight:300; font-size:1.02rem; }
+
+  /* ============================================================
+     BOOKING FORM
+  ============================================================ */
+  .booking{ background:var(--beige); }
+
+  .booking-card{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:36px 28px;
+    box-shadow:0 22px 50px -30px rgba(34,30,25,.35);
+    display:flex;
+    flex-direction:column;
+    gap:40px;
+  }
+
+  .form-group{ display:flex; flex-direction:column; gap:22px; }
+
+  .form-group__title{
+    font-size:1.05rem;
+    font-weight:600;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--gold-deep);
+    border-bottom:1px solid var(--gold-soft);
+    padding-bottom:12px;
+  }
+
+  .form-row{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:18px;
+  }
+  .form-row--single{ grid-template-columns:1fr; }
+
+  .field{ display:flex; flex-direction:column; gap:8px; }
+  .field label{
+    font-size:.78rem; letter-spacing:.1em; text-transform:uppercase;
+    font-weight:500; color:var(--text-dark);
+  }
+  .field .hint{
+    font-size:.8rem; color:var(--text-muted); font-weight:300;
+    letter-spacing:normal; text-transform:none;
+  }
+
+  .field input,
+  .field select,
+  .field textarea{
+    font-family:var(--font-body);
+    font-size:.98rem;
+    font-weight:400;
+    color:var(--text-dark);
+    background:var(--cream);
+    border:1px solid var(--gold-soft);
+    border-radius:8px;
+    padding:13px 16px;
+    width:100%;
+    transition:border-color .3s var(--ease), box-shadow .3s var(--ease);
+  }
+  .field textarea{ resize:vertical; min-height:110px; font-family:var(--font-body); }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus{
+    outline:none;
+    border-color:var(--gold);
+    box-shadow:0 0 0 3px rgba(200,163,104,.18);
+  }
+
+  .field select{ appearance:none; cursor:pointer;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23A9824A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+    background-repeat:no-repeat; background-position:right 14px center; background-size:16px;
+    padding-right:42px;
+  }
+
+  /* service info card */
+  .service-info{
+    background:var(--cream);
+    border:1px dashed var(--gold-soft);
+    border-radius:10px;
+    padding:16px 18px;
+    display:none;
+    gap:8px 24px;
+    flex-wrap:wrap;
+    font-size:.92rem;
+    color:var(--text-dark);
+  }
+  .service-info.is-active{ display:flex; }
+  .service-info strong{ color:var(--gold-deep); }
+
+  /* checkboxes */
+  .check{
+    display:flex; align-items:flex-start; gap:12px;
+    cursor:pointer; font-size:.92rem; font-weight:300; color:var(--text-dark);
+  }
+  .check input{
+    flex:none; margin-top:3px;
+    width:18px; height:18px;
+    accent-color:var(--gold-deep);
+    cursor:pointer;
+  }
+  .check span strong{ font-weight:500; }
+
+  .notice{
+    display:none;
+    background:rgba(200,163,104,.12);
+    border:1px solid var(--gold-soft);
+    border-radius:10px;
+    padding:14px 16px;
+    font-size:.88rem;
+    color:var(--text-dark);
+    font-weight:300;
+  }
+  .notice.is-active{ display:block; }
+  .notice strong{ color:var(--gold-deep); font-weight:600; }
+
+  .estimate{
+    display:none;
+    border-top:1px dashed var(--gold-soft);
+    padding-top:18px;
+    font-size:.95rem;
+  }
+  .estimate.is-active{ display:flex; flex-direction:column; gap:6px; }
+  .estimate__row{ display:flex; justify-content:space-between; gap:12px; }
+  .estimate__row span:last-child{ font-weight:500; }
+  .estimate__total{
+    font-family:var(--font-display);
+    font-size:1.3rem;
+    font-weight:600;
+    color:var(--gold-deep);
+  }
+
+  .field--error input,
+  .field--error select,
+  .field--error textarea{
+    border-color:#C0654E;
+  }
+  .error-msg{
+    display:none;
+    font-size:.78rem;
+    color:#B0503A;
+    font-weight:400;
+  }
+  .field--error .error-msg{ display:block; }
+
+  /* ============================================================
+     CONFIRMATION
+  ============================================================ */
+  .confirmation{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:48px 32px;
+    box-shadow:0 22px 50px -30px rgba(34,30,25,.35);
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+  }
+  .confirmation__icon{
+    width:56px; height:56px;
+    border:1px solid var(--gold);
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    color:var(--gold-deep);
+  }
+  .confirmation__icon svg{ width:24px; height:24px; }
+  .confirmation h2{ font-size:1.9rem; }
+  .confirmation p{ color:var(--text-muted); font-weight:300; max-width:46ch; }
+  .confirmation__summary{
+    width:100%;
+    text-align:left;
+    background:var(--cream);
+    border:1px solid var(--gold-soft);
+    border-radius:10px;
+    padding:20px;
+    font-size:.9rem;
+    color:var(--text-dark);
+    font-weight:300;
+    line-height:1.8;
+    white-space:pre-line;
+  }
+
+  /* ============================================================
+     NEXT STEPS
+  ============================================================ */
+  .next-steps{ background:var(--cream); }
+
+  .steps__grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:24px;
+  }
+  .step-card{
+    background:var(--white);
+    border-radius:var(--radius);
+    padding:30px 24px;
+    border-top:2px solid var(--gold);
+    box-shadow:0 18px 40px -28px rgba(34,30,25,.3);
+    transition:transform .45s var(--ease), box-shadow .45s var(--ease);
+  }
+  .step-card:hover{ transform:translateY(-6px); box-shadow:0 26px 50px -28px rgba(34,30,25,.4); }
+  .step-card__num{
+    font-family:var(--font-display);
+    font-size:1.6rem;
+    color:var(--gold-soft);
+    font-weight:600;
+    margin-bottom:10px;
+  }
+  .step-card h3{ font-size:1.2rem; margin-bottom:8px; font-weight:600; }
+  .step-card p{ font-size:.92rem; color:var(--text-muted); font-weight:300; }
+
+  /* ============================================================
+     PREPARATION REMINDER — ink panel
+  ============================================================ */
+  .prep{ background:var(--ink); color:var(--text-light); }
+  .prep .section-head p{ color:rgba(247,241,230,.7); }
+  .prep .eyebrow{ color:var(--gold-soft); }
+
+  .prep__list{
+    list-style:none; max-width:560px; margin:0 auto;
+    display:flex; flex-direction:column; gap:20px;
+  }
+  .prep__list li{ display:flex; align-items:flex-start; gap:16px; font-size:1.02rem; font-weight:300; }
+  .prep__check{
+    flex:none; width:28px; height:28px; border:1px solid var(--gold);
+    border-radius:50%; display:flex; align-items:center; justify-content:center; color:var(--gold);
+  }
+  .prep__check svg{ width:13px; height:13px; }
+
+  /* ============================================================
+     FINAL CTA
+  ============================================================ */
+  .cta{ background:var(--ink); color:var(--text-light); text-align:center; padding:100px 0; }
+  .cta__inner{ max-width:600px; margin:0 auto; display:flex; flex-direction:column; align-items:center; gap:22px; }
+  .cta h2{ font-size:clamp(2.2rem, 6vw, 3.4rem); }
+  .cta p{ font-weight:300; font-size:1.02rem; color:rgba(247,241,230,.78); max-width:46ch; }
+
+  /* ============================================================
+     STICKY MOBILE BOOKING BAR
+  ============================================================ */
+  .sticky-bar{
+    position:fixed; left:0; right:0; bottom:0; z-index:50;
+    background:var(--gold); display:none;
+  }
+  .sticky-bar a{
+    display:block; width:100%; text-align:center; padding:16px 0;
+    font-weight:600; font-size:.82rem; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--ink); text-decoration:none;
+  }
+
+  /* ============================================================
+     RESPONSIVE
+  ============================================================ */
+  @media (max-width: 880px){
+    .form-row{ grid-template-columns:1fr; }
+    .steps__grid{ grid-template-columns:repeat(2,1fr); }
+    section{ padding:60px 0; }
+    .hero{ min-height:54vh; padding:110px 24px 70px; }
+    .sticky-bar{ display:block; }
+    body{ padding-bottom:64px; }
+  }
+  @media (min-width: 881px){ body{ padding-bottom:0; } }
+
+  @media (max-width: 480px){
+    .steps__grid{ grid-template-columns:1fr; }
+    .booking-card{ padding:28px 20px; }
+  }
+
+</style>
+</head>
+<body>
+
+<!-- ============================================================
+     HERO
+============================================================ -->
+<header class="hero">
+  <div class="hero__bg-line" aria-hidden="true">
+    <svg viewBox="0 0 1200 800" preserveAspectRatio="none">
+      <path d="M-50,650 C150,500 350,750 600,600 C850,450 1050,700 1300,550"/>
+      <path d="M-50,200 C200,80 400,300 650,180 C900,60 1100,260 1300,150"/>
+    </svg>
+  </div>
+  <div class="hero__content">
+    <span class="hero__eyebrow">The Mane Experience</span>
+    <h1>Book Your <span class="accent">Mane Experience</span></h1>
+    <p class="hero__sub">
+      Tell us a little about you, your hair, and the style you're dreaming of —
+      we'll take care of the rest.
+    </p>
+  </div>
+</header>
+
+<!-- ============================================================
+     BOOKING FORM
+============================================================ -->
+<section class="booking" id="booking-form">
+  <div class="wrap">
+
+    <div class="section-head reveal">
+      <span class="eyebrow">Request Your Appointment</span>
+      <h2>Booking Request Form</h2>
+      <p>This is a booking <em>request</em>, not a confirmed appointment. We'll review your details and follow up to confirm your time.</p>
+    </div>
+
+    <form id="bookingForm" class="booking-card reveal" novalidate>
+
+      <!-- CONTACT INFO -->
+      <div class="form-group">
+        <div class="form-group__title">Contact Information</div>
+
+        <div class="form-row">
+          <div class="field" data-field="firstName">
+            <label for="firstName">First Name</label>
+            <input type="text" id="firstName" name="firstName" required>
+            <span class="error-msg">Please enter your first name.</span>
+          </div>
+          <div class="field" data-field="lastName">
+            <label for="lastName">Last Name</label>
+            <input type="text" id="lastName" name="lastName" required>
+            <span class="error-msg">Please enter your last name.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field" data-field="email">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" required>
+            <span class="error-msg">Please enter a valid email address.</span>
+          </div>
+          <div class="field" data-field="phone">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" required>
+            <span class="error-msg">Please enter your phone number.</span>
+          </div>
+        </div>
+
+        <div class="form-row form-row--single">
+          <div class="field">
+            <label for="instagram">Instagram Handle <span class="hint">(optional)</span></label>
+            <input type="text" id="instagram" name="instagram" placeholder="@yourhandle">
+          </div>
+        </div>
+      </div>
+
+      <!-- SERVICE & SCHEDULING -->
+      <div class="form-group">
+        <div class="form-group__title">Service &amp; Scheduling</div>
+
+        <div class="form-row form-row--single">
+          <div class="field" data-field="service">
+            <label for="service">Select a Service</label>
+            <select id="service" name="service" required>
+              <option value="" disabled selected>Choose a service…</option>
+              <option value="Frontal Wig Install" data-duration="3.5 hours" data-price="300">Frontal Wig Install — $300</option>
+              <option value="Closure Wig Install" data-duration="2.5 hours" data-price="250">Closure Wig Install — $250</option>
+              <option value="Traditional Sew-In" data-duration="3 hours" data-price="275">Traditional Sew-In — $275</option>
+              <option value="Quick Weave" data-duration="2 hours" data-price="200">Quick Weave — $200</option>
+            </select>
+            <span class="error-msg">Please select a service.</span>
+          </div>
+        </div>
+
+        <div id="serviceInfo" class="service-info">
+          <span>Estimated Duration: <strong id="serviceDuration">—</strong></span>
+          <span>Estimated Price: <strong id="servicePrice">—</strong></span>
+        </div>
+
+        <div class="form-row">
+          <div class="field" data-field="preferredDate">
+            <label for="preferredDate">Preferred Date</label>
+            <input type="date" id="preferredDate" name="preferredDate" required>
+            <span class="error-msg">Please choose a preferred date.</span>
+          </div>
+          <div class="field" data-field="preferredTime">
+            <label for="preferredTime">Preferred Time</label>
+            <input type="time" id="preferredTime" name="preferredTime" required>
+            <span class="error-msg">Please choose a preferred time.</span>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field">
+            <label for="backupDate">Backup Date <span class="hint">(optional)</span></label>
+            <input type="date" id="backupDate" name="backupDate">
+          </div>
+          <div class="field">
+            <label for="backupTime">Backup Time <span class="hint">(optional)</span></label>
+            <input type="time" id="backupTime" name="backupTime">
+          </div>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" id="sameDay" name="sameDay">
+          <span>This is a <strong>same-day / squeeze-in</strong> appointment request.</span>
+        </label>
+        <div id="sameDayNotice" class="notice">
+          <strong>Heads up —</strong> same-day and squeeze-in appointments may include an additional <strong>$50</strong> fee, applied only if your request can be accommodated.
+        </div>
+
+        <div id="estimate" class="estimate">
+          <div class="estimate__row"><span>Service Price</span><span id="estServicePrice">$0</span></div>
+          <div class="estimate__row" id="estSameDayRow" style="display:none;"><span>Same-Day / Squeeze-In Fee</span><span>$50</span></div>
+          <div class="estimate__row" id="estTravelRow" style="display:none;"><span>Travel Fee (starting at)</span><span>$25</span></div>
+          <div class="estimate__row estimate__total"><span>Estimated Total</span><span id="estTotal">$0</span></div>
+        </div>
+      </div>
+
+      <!-- LOCATION -->
+      <div class="form-group">
+        <div class="form-group__title">Location</div>
+
+        <div class="form-row form-row--single">
+          <div class="field" data-field="location">
+            <label for="location">Appointment Location</label>
+            <input type="text" id="location" name="location" placeholder="Studio address, or your address if requesting travel" required>
+            <span class="error-msg">Please enter an appointment location.</span>
+          </div>
+        </div>
+
+        <label class="check">
+          <input type="checkbox" id="travel" name="travel">
+          <span>I would like <strong>The Mane Experience</strong> to travel to me.</span>
+        </label>
+        <div id="travelNotice" class="notice">
+          <strong>Travel service</strong> starts at <strong>$25+</strong> depending on distance. The exact fee will be confirmed with your appointment.
+        </div>
+      </div>
+
+      <!-- PREPARATION -->
+      <div class="form-group">
+        <div class="form-group__title">Hair Preparation</div>
+
+        <label class="check" data-field="hairPrep">
+          <input type="checkbox" id="hairPrep" name="hairPrep" required>
+          <span>My hair will be <strong>clean, blow-dried, and fully detangled</strong> before my appointment.</span>
+        </label>
+        <span class="error-msg" id="hairPrepError" style="display:none;">Please confirm your hair preparation before submitting.</span>
+      </div>
+
+      <!-- NOTES -->
+      <div class="form-group">
+        <div class="form-group__title">Notes &amp; Style Details</div>
+
+        <div class="form-row form-row--single">
+          <div class="field">
+            <label for="notes">Tell us about the look you're going for <span class="hint">(optional)</span></label>
+            <textarea id="notes" name="notes" placeholder="Inspiration photos, hair color, length, parting style, anything you'd like us to know…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- POLICIES -->
+      <div class="form-group">
+        <div class="form-group__title">Policy Acknowledgements</div>
+
+        <label class="check" data-field="policyDeposit">
+          <input type="checkbox" id="policyDeposit" name="policyDeposit" required>
+          <span>I understand a <strong>deposit may be required</strong> to secure my appointment.</span>
+        </label>
+
+        <label class="check" data-field="policyLate">
+          <input type="checkbox" id="policyLate" name="policyLate" required>
+          <span>I understand <strong>late fees may apply</strong>.</span>
+        </label>
+
+        <label class="check" data-field="policySameDay">
+          <input type="checkbox" id="policySameDay" name="policySameDay" required>
+          <span>I understand <strong>same-day / squeeze-in appointments</strong> may include an additional fee.</span>
+        </label>
+
+        <label class="check" data-field="policyRequest">
+          <input type="checkbox" id="policyRequest" name="policyRequest" required>
+          <span>I understand this is a <strong>booking request</strong> and my appointment is <strong>not confirmed</strong> until approved.</span>
+        </label>
+        <span class="error-msg" id="policyError" style="display:none;">Please confirm all policy acknowledgements before submitting.</span>
+      </div>
+
+      <button type="submit" class="btn btn--gold btn--full">Submit Booking Request</button>
+    </form>
+
+    <!-- CONFIRMATION -->
+    <div id="confirmation" class="confirmation reveal" hidden>
+      <div class="confirmation__icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>Your Request Has Been Received</h2>
+      <p>
+        Thank you for booking with The Mane Experience. Your appointment is <strong>not yet confirmed</strong> —
+        we'll review your request and follow up by email or text to confirm your date, time, and any deposit needed.
+      </p>
+      <div class="confirmation__summary" id="confirmationSummary"></div>
+      <a href="#" id="emailLink" class="btn btn--gold">Send Details via Email</a>
+    </div>
+
+  </div>
+</section>
+
+<div class="mane-divider mane-divider--draw reveal" aria-hidden="true">
+  <svg viewBox="0 0 1200 60" preserveAspectRatio="none">
+    <path d="M0,30 C150,4 300,56 450,30 C600,4 750,56 900,30 C1050,4 1150,52 1200,30"/>
+  </svg>
+</div>
+
+<!-- ============================================================
+     WHAT HAPPENS NEXT
+============================================================ -->
+<section class="next-steps">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">After You Submit</span>
+      <h2>What Happens Next</h2>
+    </div>
+
+    <div class="steps__grid">
+      <div class="step-card reveal">
+        <div class="step-card__num">01</div>
+        <h3>Submit Request</h3>
+        <p>Your details are sent to our team — service, date, time, and everything we need to plan your visit.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-card__num">02</div>
+        <h3>Appointment Reviewed</h3>
+        <p>We check availability against your preferred and backup times and review your style details.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-card__num">03</div>
+        <h3>Deposit May Be Requested</h3>
+        <p>If a deposit is required to secure your slot, we'll send a link before your appointment is finalized.</p>
+      </div>
+      <div class="step-card reveal">
+        <div class="step-card__num">04</div>
+        <h3>Appointment Confirmed</h3>
+        <p>Once confirmed, you'll receive your final date, time, and any details to know before you arrive.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     PREPARATION REMINDER
+============================================================ -->
+<section class="prep">
+  <div class="wrap">
+    <div class="section-head reveal" style="margin-bottom:32px;">
+      <span class="eyebrow">Before You Arrive</span>
+      <h2>Come As You Are — Just Ready</h2>
+    </div>
+
+    <ul class="prep__list reveal">
+      <li>
+        <span class="prep__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Hair arrives <strong>clean</strong> — freshly washed and free of product buildup.</span>
+      </li>
+      <li>
+        <span class="prep__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Hair arrives <strong>blow-dried</strong> — fully dry from root to end.</span>
+      </li>
+      <li>
+        <span class="prep__check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+        <span>Hair arrives <strong>fully detangled</strong> — smooth and snag-free from root to end.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     FINAL CTA
+============================================================ -->
+<section class="cta">
+  <div class="wrap">
+    <div class="cta__inner reveal">
+      <span class="eyebrow" style="color:var(--gold-soft);">Reserve Your Visit</span>
+      <h2>Ready For Your <span class="accent">Mane Experience?</span></h2>
+      <p>Your next appointment is more than a hairstyle — it's an investment in yourself.</p>
+      <a href="#booking-form" class="btn btn--outline-light">Back to Booking Form</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     STICKY MOBILE BOOKING BAR
+============================================================ -->
+<div class="sticky-bar">
+  <a href="#booking-form">Book Now</a>
+</div>
+
+<script>
+  /* ============================================================
+     CONFIG
+  ============================================================ */
+  const BUSINESS_EMAIL = "yourbusiness@email.com";
+  const TRAVEL_FEE_TEXT = "$25+";
+  const SAME_DAY_FEE = 50;
+
+  /* ============================================================
+     REVEAL ON SCROLL
+  ============================================================ */
+  const revealEls = document.querySelectorAll('.reveal');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12 });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  /* ============================================================
+     PREVENT PAST DATES
+  ============================================================ */
+  const todayStr = new Date().toISOString().split('T')[0];
+  const preferredDate = document.getElementById('preferredDate');
+  const backupDate = document.getElementById('backupDate');
+  preferredDate.setAttribute('min', todayStr);
+  backupDate.setAttribute('min', todayStr);
+
+  /* ============================================================
+     SERVICE INFO + ESTIMATE
+  ============================================================ */
+  const serviceSelect = document.getElementById('service');
+  const serviceInfo = document.getElementById('serviceInfo');
+  const serviceDurationEl = document.getElementById('serviceDuration');
+  const servicePriceEl = document.getElementById('servicePrice');
+
+  const estimate = document.getElementById('estimate');
+  const estServicePrice = document.getElementById('estServicePrice');
+  const estSameDayRow = document.getElementById('estSameDayRow');
+  const estTravelRow = document.getElementById('estTravelRow');
+  const estTotal = document.getElementById('estTotal');
+
+  const sameDayCheckbox = document.getElementById('sameDay');
+  const sameDayNotice = document.getElementById('sameDayNotice');
+
+  const travelCheckbox = document.getElementById('travel');
+  const travelNotice = document.getElementById('travelNotice');
+
+  function updateEstimate(){
+    const selected = serviceSelect.options[serviceSelect.selectedIndex];
+    const hasService = selected && selected.value !== "";
+
+    if (hasService) {
+      const duration = selected.getAttribute('data-duration');
+      const price = parseInt(selected.getAttribute('data-price'), 10);
+
+      serviceDurationEl.textContent = duration;
+      servicePriceEl.textContent = "$" + price;
+      serviceInfo.classList.add('is-active');
+
+      estimate.classList.add('is-active');
+      estServicePrice.textContent = "$" + price;
+
+      let total = price;
+      if (sameDayCheckbox.checked) total += SAME_DAY_FEE;
+
+      estSameDayRow.style.display = sameDayCheckbox.checked ? 'flex' : 'none';
+      estTravelRow.style.display = travelCheckbox.checked ? 'flex' : 'none';
+
+      estTotal.textContent = travelCheckbox.checked
+        ? "$" + total + " + travel"
+        : "$" + total;
+    } else {
+      serviceInfo.classList.remove('is-active');
+      estimate.classList.remove('is-active');
+    }
+  }
+
+  serviceSelect.addEventListener('change', updateEstimate);
+
+  sameDayCheckbox.addEventListener('change', () => {
+    sameDayNotice.classList.toggle('is-active', sameDayCheckbox.checked);
+    updateEstimate();
+  });
+
+  travelCheckbox.addEventListener('change', () => {
+    travelNotice.classList.toggle('is-active', travelCheckbox.checked);
+    updateEstimate();
+  });
+
+  /* ============================================================
+     FORM VALIDATION + SUBMISSION
+  ============================================================ */
+  const form = document.getElementById('bookingForm');
+  const confirmation = document.getElementById('confirmation');
+  const confirmationSummary = document.getElementById('confirmationSummary');
+  const emailLink = document.getElementById('emailLink');
+  const hairPrepError = document.getElementById('hairPrepError');
+  const policyError = document.getElementById('policyError');
+
+  function clearErrors(){
+    form.querySelectorAll('.field--error').forEach(el => el.classList.remove('field--error'));
+    hairPrepError.style.display = 'none';
+    policyError.style.display = 'none';
+  }
+
+  function markError(name){
+    const field = form.querySelector('[data-field="' + name + '"]');
+    if (field) field.classList.add('field--error');
+  }
+
+  function formatDate(value){
+    if (!value) return "—";
+    const [y, m, d] = value.split('-');
+    return m + "/" + d + "/" + y;
+  }
+
+  function formatTime(value){
+    if (!value) return "—";
+    const [h, m] = value.split(':').map(Number);
+    const period = h >= 12 ? 'PM' : 'AM';
+    const hour12 = ((h + 11) % 12) + 1;
+    return hour12 + ":" + String(m).padStart(2, '0') + " " + period;
+  }
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    clearErrors();
+
+    let valid = true;
+    const data = new FormData(form);
+
+    // Required text/select/date/time fields
+    ['firstName','lastName','email','phone','service','preferredDate','preferredTime','location'].forEach(name => {
+      const value = data.get(name);
+      if (!value || value.trim() === "") {
+        valid = false;
+        markError(name);
+      }
+    });
+
+    // Email format check
+    const emailVal = data.get('email');
+    if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+      valid = false;
+      markError('email');
+    }
+
+    // Hair prep checkbox
+    if (!document.getElementById('hairPrep').checked) {
+      valid = false;
+      markError('hairPrep');
+      hairPrepError.style.display = 'block';
+    }
+
+    // Policy checkboxes
+    const policies = ['policyDeposit','policyLate','policySameDay','policyRequest'];
+    let policiesOk = true;
+    policies.forEach(name => {
+      if (!document.getElementById(name).checked) {
+        policiesOk = false;
+        markError(name);
+      }
+    });
+    if (!policiesOk) {
+      valid = false;
+      policyError.style.display = 'block';
+    }
+
+    if (!valid) {
+      const firstError = form.querySelector('.field--error');
+      if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    /* --------------------------------------------------------
+       BUILD SUMMARY + MAILTO
+    -------------------------------------------------------- */
+    const selectedService = serviceSelect.options[serviceSelect.selectedIndex];
+    const serviceName = selectedService.value;
+    const serviceDuration = selectedService.getAttribute('data-duration');
+    const servicePrice = selectedService.getAttribute('data-price');
+
+    const sameDay = sameDayCheckbox.checked ? "Yes" : "No";
+    const travel = travelCheckbox.checked ? "Yes" : "No";
+
+    const lines = [
+      "NEW BOOKING REQUEST — THE MANE EXPERIENCE",
+      "",
+      "CONTACT INFO",
+      "Name: " + data.get('firstName') + " " + data.get('lastName'),
+      "Email: " + data.get('email'),
+      "Phone: " + data.get('phone'),
+      "Instagram: " + (data.get('instagram') || "—"),
+      "",
+      "SERVICE & SCHEDULING",
+      "Service: " + serviceName + " (" + serviceDuration + ", $" + servicePrice + ")",
+      "Preferred Date: " + formatDate(data.get('preferredDate')),
+      "Preferred Time: " + formatTime(data.get('preferredTime')),
+      "Backup Date: " + formatDate(data.get('backupDate')),
+      "Backup Time: " + formatTime(data.get('backupTime')),
+      "Same-Day / Squeeze-In Request: " + sameDay,
+      "",
+      "LOCATION",
+      "Appointment Location: " + data.get('location'),
+      "Travel Service Requested: " + travel + (travelCheckbox.checked ? " (fee starting at " + TRAVEL_FEE_TEXT + ")" : ""),
+      "",
+      "PREPARATION",
+      "Hair will be clean, blow-dried & detangled: Confirmed",
+      "",
+      "NOTES / STYLE DETAILS",
+      (data.get('notes') && data.get('notes').trim() !== "" ? data.get('notes') : "—"),
+      "",
+      "POLICY ACKNOWLEDGEMENTS",
+      "- Deposit may be required: Confirmed",
+      "- Late fees may apply: Confirmed",
+      "- Same-day/squeeze-in fee may apply: Confirmed",
+      "- This is a booking request, not a confirmed appointment: Confirmed"
+    ];
+
+    const summaryText = lines.join("\n");
+
+    confirmationSummary.textContent = summaryText;
+
+    const subject = "New Booking Request — The Mane Experience";
+    const mailtoLink = "mailto:" + BUSINESS_EMAIL
+      + "?subject=" + encodeURIComponent(subject)
+      + "&body=" + encodeURIComponent(summaryText);
+
+    emailLink.setAttribute('href', mailtoLink);
+
+    // Open the email client automatically
+    window.location.href = mailtoLink;
+
+    // Show confirmation
+    form.hidden = true;
+    confirmation.hidden = false;
+    confirmation.classList.add('is-visible');
+    confirmation.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+</script>
+
+</body>
+</html>

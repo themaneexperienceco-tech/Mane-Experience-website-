@@ -1,0 +1,10 @@
+# Original oversized source photos (kept locally, not tracked) —
+# optimized/resized copies for the site live in images/gallery/
+raw/
+
+# Old drafts / duplicates / unrelated files kept for reference only
+_archive/
+
+# OS junk
+.DS_Store
+Thumbs.db
