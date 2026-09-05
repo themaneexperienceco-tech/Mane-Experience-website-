@@ -6,8 +6,160 @@
 <title>Booking &amp; Service Policies | The Mane Experience</title>
 <meta name="description" content="Review all booking, appointment, cancellation, and service policies for The Mane Experience before scheduling your appointment." />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
+<style>
+  /* ============================================================
+     SHARED SITE NAV / FOOTER
+  ============================================================ */
+  .tme-nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:22px 28px;
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+    transition:background .45s ease, box-shadow .45s ease, padding .45s ease;
+  }
+  .tme-nav.scrolled{
+    background:rgba(34,30,25,.96); backdrop-filter:blur(12px);
+    box-shadow:0 2px 32px rgba(0,0,0,.28); padding-top:14px; padding-bottom:14px;
+  }
+  .tme-nav__logo{
+    font-family:'Cormorant Garamond', Georgia, serif; font-size:1.18rem; font-weight:600;
+    letter-spacing:.06em; color:#F7F1E6; line-height:1.2; text-decoration:none;
+  }
+  .tme-nav__logo span{
+    display:block; font-family:'Jost', sans-serif; font-size:.6rem; font-weight:400;
+    letter-spacing:.28em; text-transform:uppercase; color:#E6D3B3; margin-top:1px;
+  }
+  .tme-nav__links{ display:flex; list-style:none; gap:32px; margin:0; padding:0; }
+  .tme-nav__links a{
+    font-family:'Jost', sans-serif; font-size:.74rem; letter-spacing:.16em; text-transform:uppercase;
+    color:rgba(247,241,230,.75); text-decoration:none; transition:color .3s;
+  }
+  .tme-nav__links a:hover{ color:#E6D3B3; }
+  .tme-nav__cta a{
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'Jost', sans-serif; font-weight:500; font-size:.78rem;
+    letter-spacing:.12em; text-transform:uppercase; text-decoration:none;
+    padding:.9em 1.8em; border-radius:2px; background:#C8A368; color:#221E19;
+    transition:background .35s;
+  }
+  .tme-nav__cta a:hover{ background:#A9824A; }
+  .tme-nav__toggle{
+    display:none; flex-direction:column; gap:5px; cursor:pointer;
+    background:none; border:none; padding:4px;
+  }
+  .tme-nav__toggle span{ display:block; width:22px; height:1px; background:#F7F1E6; }
+  .tme-nav__drawer{
+    position:fixed; top:0; right:0; bottom:0; width:min(300px,85vw);
+    background:#221E19; z-index:200; padding:80px 36px 48px;
+    display:flex; flex-direction:column; gap:36px;
+    transform:translateX(105%); transition:transform .5s ease;
+  }
+  .tme-nav__drawer.is-open{ transform:translateX(0); }
+  .tme-nav__drawer ul{ list-style:none; display:flex; flex-direction:column; gap:22px; margin:0; padding:0; }
+  .tme-nav__drawer a{
+    font-size:1.6rem; font-family:'Cormorant Garamond', Georgia, serif; color:#F7F1E6;
+    text-decoration:none; transition:color .3s;
+  }
+  .tme-nav__drawer a:hover{ color:#E6D3B3; }
+  .tme-nav__drawer-close{
+    position:absolute; top:24px; right:24px; background:none; border:none;
+    color:#F7F1E6; font-size:1.6rem; cursor:pointer; line-height:1;
+  }
+  .tme-nav__overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:150;
+    opacity:0; pointer-events:none; transition:opacity .4s;
+  }
+  .tme-nav__overlay.is-visible{ opacity:1; pointer-events:auto; }
+  @media (max-width:880px){
+    .tme-nav__links, .tme-nav__cta{ display:none; }
+    .tme-nav__toggle{ display:flex; }
+  }
+
+  .tme-footer{
+    background:#19160F; color:rgba(247,241,230,.55); padding:72px 28px 36px;
+    font-family:'Jost', sans-serif;
+  }
+  .tme-footer__top{
+    max-width:1200px; margin:0 auto;
+    display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:48px;
+    padding-bottom:48px; border-bottom:1px solid rgba(200,163,104,.2);
+  }
+  .tme-footer__brand-name{
+    font-family:'Cormorant Garamond', Georgia, serif; font-size:1.4rem; font-weight:600;
+    color:#F7F1E6; letter-spacing:.04em; margin-bottom:4px;
+  }
+  .tme-footer__tagline{
+    font-size:.72rem; letter-spacing:.26em; text-transform:uppercase; color:#E6D3B3; margin-bottom:16px;
+  }
+  .tme-footer__brand p{ font-size:.9rem; font-weight:300; line-height:1.7; max-width:36ch; margin:0; }
+  .tme-footer__col h4{
+    font-size:.72rem; letter-spacing:.22em; text-transform:uppercase; color:#E6D3B3; font-weight:600; margin:0 0 18px;
+  }
+  .tme-footer__links{ list-style:none; display:flex; flex-direction:column; gap:10px; margin:0; padding:0; }
+  .tme-footer__links a, .tme-footer__links span{
+    font-size:.92rem; font-weight:300; color:rgba(247,241,230,.55); text-decoration:none; transition:color .3s;
+  }
+  .tme-footer__links a:hover{ color:#E6D3B3; }
+  .tme-footer__bottom{
+    max-width:1200px; margin:0 auto; padding-top:28px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:.78rem;
+  }
+  @media (max-width:1080px){
+    .tme-footer__top{ grid-template-columns:1fr 1fr; }
+    .tme-footer__brand{ grid-column:1 / -1; }
+  }
+  @media (max-width:560px){
+    .tme-footer__top{ grid-template-columns:1fr; }
+  }
+
+  .tme-sticky-bar{ position:fixed; bottom:0; left:0; right:0; z-index:90; background:#C8A368; display:none; }
+  .tme-sticky-bar a{
+    display:block; width:100%; text-align:center; padding:17px;
+    font-family:'Jost', sans-serif; font-weight:600; font-size:.8rem;
+    letter-spacing:.2em; text-transform:uppercase; color:#221E19; text-decoration:none;
+  }
+  @media (max-width:880px){
+    .tme-sticky-bar{ display:block; }
+    body{ padding-bottom:64px; }
+  }
+</style>
 </head>
 <body style="margin:0;padding:0;background:#faf7f4;font-family:'Jost',sans-serif;font-weight:300;color:#2e2a28;line-height:1.8;font-size:16px;">
+
+<!-- ═══════════════════════════════════ NAV -->
+<nav class="tme-nav" id="tmeNav">
+  <a href="index.html" class="tme-nav__logo" aria-label="The Mane Experience Home">
+    The Mane Experience
+    <span>More Than A Hairstyle</span>
+  </a>
+  <ul class="tme-nav__links" role="list">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="policies.html">Policies</a></li>
+  </ul>
+  <div class="tme-nav__cta">
+    <a href="booking.html">Book Now</a>
+  </div>
+  <button class="tme-nav__toggle" aria-label="Open menu" id="tmeNavToggle">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="tme-nav__overlay" id="tmeNavOverlay"></div>
+<div class="tme-nav__drawer" id="tmeNavDrawer" aria-modal="true">
+  <button class="tme-nav__drawer-close" id="tmeNavClose" aria-label="Close menu">&times;</button>
+  <ul role="list">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="policies.html">Policies</a></li>
+    <li><a href="booking.html">Book Now</a></li>
+  </ul>
+</div>
 
 <!-- ══════════════════════════════════════════════ HERO -->
 <header style="background:#2e2a28;padding:5rem 2rem 4.5rem;text-align:center;position:relative;overflow:hidden;">
@@ -318,7 +470,7 @@
 </main>
 
 <!-- ══════════════════════════════════════════════ CLOSING CTA -->
-<footer style="background:#2e2a28;padding:5.5rem 2rem;text-align:center;position:relative;overflow:hidden;">
+<section style="background:#2e2a28;padding:5.5rem 2rem;text-align:center;position:relative;overflow:hidden;">
   <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 50% at 50% 50%,rgba(200,169,110,.10) 0%,transparent 70%);pointer-events:none;"></div>
 
   <p style="font-family:'Jost',sans-serif;font-weight:500;font-size:.68rem;letter-spacing:.26em;text-transform:uppercase;color:#c8a96e;margin:0 0 1rem;position:relative;">You're Ready</p>
@@ -333,7 +485,7 @@
   </p>
 
   <!-- CTA Button -->
-  <a href="#" style="display:inline-block;padding:1rem 3rem;background:#c8a96e;color:#2e2a28;font-family:'Jost',sans-serif;font-size:.8rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border:1px solid #c8a96e;border-radius:1px;position:relative;transition:background .3s;">Book an Appointment</a>
+  <a href="booking.html" style="display:inline-block;padding:1rem 3rem;background:#c8a96e;color:#2e2a28;font-family:'Jost',sans-serif;font-size:.8rem;font-weight:500;letter-spacing:.18em;text-transform:uppercase;text-decoration:none;border:1px solid #c8a96e;border-radius:1px;position:relative;transition:background .3s;">Book an Appointment</a>
 
   <!-- small print -->
   <p style="margin:3rem auto 0;max-width:500px;color:rgba(255,255,255,.3);font-size:.76rem;line-height:1.8;position:relative;">
@@ -342,7 +494,73 @@
 
   <!-- brand wordmark -->
   <p style="margin-top:3.5rem;font-family:'Cormorant Garamond',serif;font-style:italic;font-size:1.1rem;color:rgba(255,255,255,.2);letter-spacing:.08em;position:relative;">The Mane Experience</p>
+</section>
+
+<!-- ══════════════════════════════════════════════ FOOTER -->
+<footer class="tme-footer">
+  <div class="tme-footer__top">
+    <div class="tme-footer__brand">
+      <div class="tme-footer__brand-name">The Mane Experience</div>
+      <div class="tme-footer__tagline">More Than A Hairstyle</div>
+      <p>Luxury hair services built around healthy hair, intentional care, and a client experience that makes you feel seen, heard, and confident every time.</p>
+    </div>
+    <div class="tme-footer__col">
+      <h4>Navigate</h4>
+      <ul class="tme-footer__links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="gallery.html">Gallery</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+        <li><a href="policies.html">Policies</a></li>
+        <li><a href="booking.html">Book</a></li>
+      </ul>
+    </div>
+    <div class="tme-footer__col">
+      <h4>Connect</h4>
+      <ul class="tme-footer__links">
+        <li><a href="https://www.instagram.com/___brixana" target="_blank" rel="noopener">Instagram @___brixana</a></li>
+        <li><a href="mailto:themaneexperienceco@gmail.com">themaneexperienceco@gmail.com</a></li>
+        <li><a href="tel:+17706052782">(770) 605-2782</a></li>
+        <li><span>511 Gatewood Drive, Monroe, GA</span></li>
+        <li><span>Tue&ndash;Thu 8am&ndash;2pm &middot; Fri&ndash;Sun by special availability</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="tme-footer__bottom">
+    <span>&copy; <span id="tmeYear"></span> The Mane Experience. All rights reserved.</span>
+    <span>Site by The Mane Experience</span>
+  </div>
 </footer>
+
+<div class="tme-sticky-bar">
+  <a href="booking.html">Book Your Appointment</a>
+</div>
+
+<script>
+  // Nav: scroll shadow + mobile drawer
+  const tmeNav = document.getElementById('tmeNav');
+  const tmeNavToggle = document.getElementById('tmeNavToggle');
+  const tmeNavDrawer = document.getElementById('tmeNavDrawer');
+  const tmeNavOverlay = document.getElementById('tmeNavOverlay');
+  const tmeNavClose = document.getElementById('tmeNavClose');
+
+  function onTmeNavScroll(){
+    tmeNav.classList.toggle('scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', onTmeNavScroll);
+  onTmeNavScroll();
+
+  function openTmeDrawer(){ tmeNavDrawer.classList.add('is-open'); tmeNavOverlay.classList.add('is-visible'); }
+  function closeTmeDrawer(){ tmeNavDrawer.classList.remove('is-open'); tmeNavOverlay.classList.remove('is-visible'); }
+  tmeNavToggle.addEventListener('click', openTmeDrawer);
+  tmeNavClose.addEventListener('click', closeTmeDrawer);
+  tmeNavOverlay.addEventListener('click', closeTmeDrawer);
+  tmeNavDrawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeTmeDrawer));
+
+  // Footer year
+  document.getElementById('tmeYear').textContent = new Date().getFullYear();
+</script>
 
 </body>
 </html>

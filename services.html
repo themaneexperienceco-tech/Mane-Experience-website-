@@ -610,6 +610,109 @@
   }
 
   /* ============================================================
+     NAV
+  ============================================================ */
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    padding:22px 28px;
+    display:flex; align-items:center; justify-content:space-between; gap:24px;
+    transition:background .45s var(--ease), box-shadow .45s var(--ease), padding .45s var(--ease);
+  }
+  .nav.scrolled{
+    background:rgba(34,30,25,.96);
+    backdrop-filter:blur(12px);
+    box-shadow:0 2px 32px rgba(0,0,0,.28);
+    padding-top:14px; padding-bottom:14px;
+  }
+  .nav__logo{
+    font-family:var(--font-display); font-size:1.18rem; font-weight:600;
+    letter-spacing:.06em; color:var(--text-light); line-height:1.2; text-decoration:none;
+  }
+  .nav__logo span{
+    display:block; font-family:var(--font-body); font-size:.6rem; font-weight:400;
+    letter-spacing:.28em; text-transform:uppercase; color:var(--gold-soft); margin-top:1px;
+  }
+  .nav__links{ display:flex; list-style:none; gap:32px; margin:0; padding:0; }
+  .nav__links a{
+    font-size:.74rem; letter-spacing:.16em; text-transform:uppercase;
+    color:rgba(247,241,230,.75); text-decoration:none; transition:color .3s;
+  }
+  .nav__links a:hover{ color:var(--gold-soft); }
+  .nav__cta{ display:flex; gap:12px; }
+  .nav__toggle{
+    display:none; flex-direction:column; gap:5px; cursor:pointer;
+    background:none; border:none; padding:4px;
+  }
+  .nav__toggle span{ display:block; width:22px; height:1px; background:var(--text-light); }
+  .nav__drawer{
+    position:fixed; top:0; right:0; bottom:0; width:min(300px,85vw);
+    background:var(--ink); z-index:200; padding:80px 36px 48px;
+    display:flex; flex-direction:column; gap:36px;
+    transform:translateX(105%); transition:transform .5s var(--ease);
+  }
+  .nav__drawer.is-open{ transform:translateX(0); }
+  .nav__drawer ul{ list-style:none; display:flex; flex-direction:column; gap:22px; margin:0; padding:0; }
+  .nav__drawer a{
+    font-size:1.6rem; font-family:var(--font-display); color:var(--text-light);
+    text-decoration:none; transition:color .3s;
+  }
+  .nav__drawer a:hover{ color:var(--gold-soft); }
+  .nav__drawer-close{
+    position:absolute; top:24px; right:24px; background:none; border:none;
+    color:var(--text-light); font-size:1.6rem; cursor:pointer; line-height:1;
+  }
+  .nav__overlay{
+    position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:150;
+    opacity:0; pointer-events:none; transition:opacity .4s;
+  }
+  .nav__overlay.is-visible{ opacity:1; pointer-events:auto; }
+  @media (max-width:880px){
+    .nav__links, .nav__cta{ display:none; }
+    .nav__toggle{ display:flex; }
+  }
+
+  /* ============================================================
+     FOOTER
+  ============================================================ */
+  .footer{
+    background:#19160F; color:rgba(247,241,230,.55); padding:72px 28px 36px;
+  }
+  .footer__top{
+    max-width:var(--max-width); margin:0 auto;
+    display:grid; grid-template-columns:1.5fr 1fr 1fr; gap:48px;
+    padding-bottom:48px; border-bottom:1px solid rgba(200,163,104,.2);
+  }
+  .footer__brand-name{
+    font-family:var(--font-display); font-size:1.4rem; font-weight:600;
+    color:var(--text-light); letter-spacing:.04em; margin-bottom:4px;
+  }
+  .footer__tagline{
+    font-size:.72rem; letter-spacing:.26em; text-transform:uppercase;
+    color:var(--gold-soft); margin-bottom:16px;
+  }
+  .footer__brand p{ font-size:.9rem; font-weight:300; line-height:1.7; max-width:36ch; margin:0; }
+  .footer__col h4{
+    font-size:.72rem; letter-spacing:.22em; text-transform:uppercase;
+    color:var(--gold-soft); font-weight:600; margin:0 0 18px;
+  }
+  .footer__links{ list-style:none; display:flex; flex-direction:column; gap:10px; margin:0; padding:0; }
+  .footer__links a, .footer__links span{
+    font-size:.92rem; font-weight:300; color:rgba(247,241,230,.55); text-decoration:none; transition:color .3s;
+  }
+  .footer__links a:hover{ color:var(--gold-soft); }
+  .footer__bottom{
+    max-width:var(--max-width); margin:0 auto; padding-top:28px;
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; font-size:.78rem;
+  }
+  @media (max-width:1080px){
+    .footer__top{ grid-template-columns:1fr 1fr; }
+    .footer__brand{ grid-column:1 / -1; }
+  }
+  @media (max-width:560px){
+    .footer__top{ grid-template-columns:1fr; }
+  }
+
+  /* ============================================================
      STICKY MOBILE BOOKING BAR
   ============================================================ */
   .sticky-bar{
@@ -671,6 +774,45 @@
 </style>
 </head>
 <body>
+
+<!-- ============================================================
+     NAV
+============================================================ -->
+<nav class="nav" id="mainNav">
+  <a href="index.html" class="nav__logo" aria-label="The Mane Experience Home">
+    The Mane Experience
+    <span>More Than A Hairstyle</span>
+  </a>
+  <ul class="nav__links" role="list">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="policies.html">Policies</a></li>
+  </ul>
+  <div class="nav__cta">
+    <a href="booking.html" class="btn btn--gold">Book Now</a>
+  </div>
+  <button class="nav__toggle" aria-label="Open menu" id="navToggle">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="nav__overlay" id="navOverlay"></div>
+<div class="nav__drawer" id="navDrawer" aria-modal="true">
+  <button class="nav__drawer-close" id="navClose" aria-label="Close menu">&times;</button>
+  <ul role="list">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="gallery.html">Gallery</a></li>
+    <li><a href="faq.html">FAQ</a></li>
+    <li><a href="policies.html">Policies</a></li>
+    <li><a href="booking.html">Book Now</a></li>
+  </ul>
+  <a href="booking.html" class="btn btn--gold">Book Appointment</a>
+</div>
 
 <!-- ============================================================
      HERO
@@ -985,12 +1127,53 @@
       <h2>Ready For Your <span class="accent">Mane Experience?</span></h2>
       <p>Your next appointment is more than a hairstyle — it's an investment in yourself.</p>
       <div class="cta__actions">
-        <a href="#" class="btn btn--gold">Book Appointment</a>
-        <a href="#" class="btn btn--outline-light">Contact Us</a>
+        <a href="booking.html" class="btn btn--gold">Book Appointment</a>
+        <a href="mailto:themaneexperienceco@gmail.com" class="btn btn--outline-light">Contact Us</a>
       </div>
     </div>
   </div>
 </section>
+
+<!-- ============================================================
+     FOOTER
+============================================================ -->
+<footer class="footer">
+  <div class="wrap">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <div class="footer__brand-name">The Mane Experience</div>
+        <div class="footer__tagline">More Than A Hairstyle</div>
+        <p>Luxury hair services built around healthy hair, intentional care, and a client experience that makes you feel seen, heard, and confident every time.</p>
+      </div>
+      <div class="footer__col">
+        <h4>Navigate</h4>
+        <ul class="footer__links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="gallery.html">Gallery</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+          <li><a href="policies.html">Policies</a></li>
+          <li><a href="booking.html">Book</a></li>
+        </ul>
+      </div>
+      <div class="footer__col">
+        <h4>Connect</h4>
+        <ul class="footer__links">
+          <li><a href="https://www.instagram.com/___brixana" target="_blank" rel="noopener">Instagram @___brixana</a></li>
+          <li><a href="mailto:themaneexperienceco@gmail.com">themaneexperienceco@gmail.com</a></li>
+          <li><a href="tel:+17706052782">(770) 605-2782</a></li>
+          <li><span>511 Gatewood Drive, Monroe, GA</span></li>
+          <li><span>Tue&ndash;Thu 8am&ndash;2pm &middot; Fri&ndash;Sun by special availability</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer__bottom">
+      <span>&copy; <span id="year"></span> The Mane Experience. All rights reserved.</span>
+      <span>Site by The Mane Experience</span>
+    </div>
+  </div>
+</footer>
 
 <!-- ============================================================
      STICKY MOBILE BOOKING BAR
@@ -1012,6 +1195,29 @@
   }, { threshold: 0.15 });
 
   revealEls.forEach(el => observer.observe(el));
+
+  // Nav: scroll shadow + mobile drawer
+  const mainNav = document.getElementById('mainNav');
+  const navToggle = document.getElementById('navToggle');
+  const navDrawer = document.getElementById('navDrawer');
+  const navOverlay = document.getElementById('navOverlay');
+  const navClose = document.getElementById('navClose');
+
+  function onNavScroll(){
+    mainNav.classList.toggle('scrolled', window.scrollY > 40);
+  }
+  window.addEventListener('scroll', onNavScroll);
+  onNavScroll();
+
+  function openDrawer(){ navDrawer.classList.add('is-open'); navOverlay.classList.add('is-visible'); }
+  function closeDrawer(){ navDrawer.classList.remove('is-open'); navOverlay.classList.remove('is-visible'); }
+  navToggle.addEventListener('click', openDrawer);
+  navClose.addEventListener('click', closeDrawer);
+  navOverlay.addEventListener('click', closeDrawer);
+  navDrawer.querySelectorAll('a').forEach(a => a.addEventListener('click', closeDrawer));
+
+  // Footer year
+  document.getElementById('year').textContent = new Date().getFullYear();
 </script>
 
 </body>
