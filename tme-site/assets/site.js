@@ -8,13 +8,7 @@ $('burger').onclick=op;$('dx').onclick=cl;s.onclick=cl;d.querySelectorAll('a').f
 var els=document.querySelectorAll('.rv,.strand');
 if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(e){io.observe(e)})}else{els.forEach(function(e){e.classList.add('in')})}
 /* gallery: auto-loads images/gallery/look-1..24 (.jpg/.jpeg/.png/.webp) if present */
-var gal=$('gal');if(gal){var n=0,tried=0,exts=['jpg','jpeg','png','webp'];
- function add(src){n++;var a=document.createElement('a');a.href=src;a.target='_blank';var i=new Image();i.src=src;i.alt='The Mane Experience work';i.loading='lazy';a.appendChild(i);gal.appendChild(a)}
- function probe(k,xi){if(k>24){if(!n)$('galEmpty').hidden=false;return}
-  var src='images/gallery/look-'+k+'.'+exts[xi],t=new Image();
-  t.onload=function(){add(src);probe(k+1,0)};
-  t.onerror=function(){xi<exts.length-1?probe(k,xi+1):probe(k+1,0)};t.src=src}
- probe(1,0)}
+var gal=$('gal');if(gal){var G=["img_6701.jpg", "img_6703.jpg", "img_6704.jpg", "img_6708.jpg", "img_6709.jpg", "img_6710.jpg", "img_6711.jpg", "img_6712.jpg", "img_6713.jpg", "img_6714.jpg", "img_6715.jpg", "img_6716.jpg", "img_6717.jpg", "img_6718.jpg", "img_6720.jpg", "img_6721.jpg", "img_6722.jpg", "img_6723.jpg", "img_6724.jpg", "img_6725.jpg", "img_6726.jpg", "img_6727.jpg", "img_6730.jpg", "img_6731.jpg"];G.forEach(function(fn){var a=document.createElement('a');a.href='images/gallery/'+fn;a.target='_blank';var i=new Image();i.alt='The Mane Experience work';i.loading='lazy';i.onerror=function(){a.remove()};a.appendChild(i);gal.appendChild(a);i.src='images/gallery/'+fn});setTimeout(function(){if(!gal.children.length)$('galEmpty').hidden=false},2500)}
 var PRICES={"12A": {"10": 80, "12": 90, "14": 115, "16": 145, "18": 170, "20": 185, "22": 210, "24": 230, "26": 250, "28": 265, "30": 290}, "13A": {"18": 180, "20": 215, "22": 255, "24": 275, "26": 295, "28": 315}};
 document.addEventListener('input',function(e){var w=e.target.closest&&e.target.closest('.f.bad');if(w)w.classList.remove('bad')});document.addEventListener('change',function(e){var w=e.target.closest&&e.target.closest('.f.bad');if(w)w.classList.remove('bad')});
 /* collection cart */
