@@ -51,16 +51,16 @@ function est(){
  var rows=[],plain=[],total=0,notes=[];
  var htot=0,tme=$('hairSource').value.indexOf('provide')>-1;
  if(isCustom()){
-  var cl=$('hairLength').value,cn=parseInt($('bundles').value||'0',10),sel=bundleSel();
-  if(cl&&cn&&sel.length===cn){var cnt={},miss=false,lab={};
-   sel.forEach(function(x){var p=PRICES[x.g]&&PRICES[x.g][cl];lab[x.g]=x.label;if(p){htot+=p;cnt[x.g]=(cnt[x.g]||0)+1}else miss=true});
-   Object.keys(cnt).forEach(function(g){var u=PRICES[g][cl];rows.push([cnt[g]+' bundle'+(cnt[g]>1?'s':'')+' × '+cl+'" '+lab[g]+' @ '+money(u),money(u*cnt[g])]);plain.push(cnt[g]+' × '+cl+'" '+lab[g]+' @ '+money(u)+' = '+money(u*cnt[g]))});
-   if(miss){notes.push('Pricing for some bundle types is confirmed when your request is reviewed.');plain.push('Some hair pricing to be confirmed')}
-   var allC=sel.every(function(x){return x.g==='RC'}),dens=cn===4?(allC?'300%':'200%'):'';
-   $('density').value=dens||'Confirmed by Bri';
-   if(dens){rows.push(['Wig density ('+cn+' bundles)',dens]);plain.push('Density '+dens)}
-   if(cn===4&&!allC)notes.push('4 bundles gives 200% density. Only Raw Cambodian Double Drawn can reach 300%.');
-  }else{$('density').value='Confirmed by Bri';if(cn)notes.push('Choose a type for each bundle to see your estimate.')}
+  var cn=parseInt($('bundles').value||'0',10),lens=bundleLens(),cg=$('hairType').selectedOptions[0]?$('hairType').selectedOptions[0].getAttribute('data-grade'):'',cname=$('hairType').value;
+  if(cn&&cg&&lens.length===cn){var cnt={},miss=false;
+   lens.forEach(function(l){var p=PRICES[cg]&&PRICES[cg][l];if(p){htot+=p;cnt[l]=(cnt[l]||0)+1}else miss=true});
+   Object.keys(cnt).sort(function(a,b){return a-b}).forEach(function(l){var u=PRICES[cg][l];rows.push([cnt[l]+' × '+l+'" '+cname+' @ '+money(u),money(u*cnt[l])]);plain.push(cnt[l]+' × '+l+'" '+cname+' @ '+money(u)+' = '+money(u*cnt[l]))});
+   if(miss){notes.push('Pricing for some lengths is confirmed when your request is reviewed.');plain.push('Some hair pricing to be confirmed')}
+  }else if(cn){notes.push('Choose a hair type and a length for each bundle to see your estimate.')}
+  var dens=cn===4?(cg==='RC'?'300%':'200%'):'';
+  $('density').value=dens||'Confirmed by Bri';
+  if(dens){rows.push(['Wig density ('+cn+' bundles)',dens]);plain.push('Density '+dens)}
+  if(cn===4&&cg&&cg!=='RC')notes.push('4 bundles gives 200% density. Only Raw Cambodian Double Drawn can reach 300%.');
   var tx0=$('texture').value;if(tx0&&!/straight|body/i.test(tx0))notes.push('Textured styles may be priced differently; Bri confirms with your request.');
  }else if(!hairBlock.hidden&&$('hairType').value&&$('hairLength').value){
   var g=$('hairType').selectedOptions[0].getAttribute('data-grade'),len=$('hairLength').value,p=PRICES[g]&&PRICES[g][len],n=parseInt($('bundles').value||'0',10);
@@ -88,10 +88,10 @@ function sync(){
  custSync();texSync();est();
 }
 svc.onchange=sync;
-var htWrap=$('htWrap'),bundleBox=$('bundleTypes'),BUNHTML=$('bundles').innerHTML,TYPEOPTS=$('hairType').innerHTML;
+var hlWrap=$('hlWrap'),bundleBox=$('bundleTypes'),BUNHTML=$('bundles').innerHTML,LENOPTS=$('hairLength').innerHTML;
 function isCustom(){return has('data-measure')&&!hairBlock.hidden}
-function bundleSel(){var o=[];bundleBox.querySelectorAll('select').forEach(function(s){var op=s.selectedOptions[0];if(!s.disabled&&s.value&&op)o.push({g:op.getAttribute('data-grade'),label:op.value,tex:(op.getAttribute('data-tex')||'').split(',')})});return o}
-function custSync(){var c=isCustom();htWrap.hidden=c;$('hairType').disabled=c||hairBlock.hidden;
+function bundleLens(){var o=[];bundleBox.querySelectorAll('select').forEach(function(s){if(!s.disabled&&s.value)o.push(s.value)});return o}
+function custSync(){var c=isCustom();hlWrap.hidden=c;$('hairLength').disabled=c||hairBlock.hidden;
  var b=$('bundles'),prev=b.value;
  if(c){b.innerHTML='<option value="" disabled>How many bundles?</option><option>3</option><option>4</option>';b.value=(prev==='3'||prev==='4')?prev:'';if(!b.value)b.selectedIndex=0}
  else if(b.options.length<4){b.innerHTML=BUNHTML;b.value=''}
@@ -99,15 +99,13 @@ function custSync(){var c=isCustom();htWrap.hidden=c;$('hairType').disabled=c||h
  if(!c){bundleBox.querySelectorAll('select').forEach(function(s){s.disabled=true});return}
  var n=parseInt(b.value||'0',10),old=[];bundleBox.querySelectorAll('select').forEach(function(s){old.push(s.value)});
  bundleBox.innerHTML='';
- for(var i=1;i<=n;i++){var d=document.createElement('div');d.className='f';d.setAttribute('data-field','bundleType'+i);
-  d.innerHTML='<label for="bt'+i+'">Bundle '+i+' hair type</label><select id="bt'+i+'" name="bundleType'+i+'" required><option value="" disabled selected>Choose hair type&hellip;</option>'+TYPEOPTS+'</select><span class="err">Please choose a hair type for bundle '+i+'.</span>';
+ for(var i=1;i<=n;i++){var d=document.createElement('div');d.className='f';d.setAttribute('data-field','bundleLength'+i);
+  d.innerHTML='<label for="bl'+i+'">Bundle '+i+' length</label><select id="bl'+i+'" name="bundleLength'+i+'" required><option value="" disabled selected>Choose length&hellip;</option>'+LENOPTS.replace(/<option value="" disabled selected>[^<]*<\/option>/,'')+'</select><span class="err">Please choose a length for bundle '+i+'.</span>';
   bundleBox.appendChild(d);var s=d.querySelector('select');if(old[i-1]){s.value=old[i-1]}else{s.selectedIndex=0}
-  s.addEventListener('change',function(){texSync();est()})}
+  s.addEventListener('change',est)}
 }
-function texSync(){var t=$('texture'),prev=t.value,list=[];
- if(isCustom()){var sel=bundleSel();if(sel.length){list=sel[0].tex.slice();sel.forEach(function(x){list=list.filter(function(y){return x.tex.indexOf(y)>-1})})}}
- else{var o=$('hairType').selectedOptions[0];list=o&&o.getAttribute('data-tex')?o.getAttribute('data-tex').split(','):[]}
- t.innerHTML=list.length?list.map(function(x){return '<option>'+x+'</option>'}).join(''):'<option value="">'+(isCustom()?'Choose bundle types first':'Choose a hair type first')+'</option>';
+function texSync(){var t=$('texture'),prev=t.value,o=$('hairType').selectedOptions[0],list=o&&o.getAttribute('data-tex')?o.getAttribute('data-tex').split(','):[];
+ t.innerHTML=list.length?list.map(function(x){return '<option>'+x+'</option>'}).join(''):'<option value="">Choose a hair type first</option>';
  if(list.indexOf(prev)>-1)t.value=prev;
  $('texHint').textContent=isCustom()?'(one texture for the whole wig)':'';
  var m=$('texMatch');if(m)m.textContent=t.value?'Your frontal or closure must match your bundles, so it will be '+t.value+'.':'Your frontal or closure texture will match your bundle texture.'}
@@ -135,7 +133,7 @@ f.addEventListener('submit',function(e){e.preventDefault();
  var L=['NEW BOOKING REQUEST - THE MANE EXPERIENCE','','CONTACT','Name: '+data.get('firstName')+' '+data.get('lastName'),'Email: '+data.get('email'),'Phone: '+data.get('phone'),'Instagram: '+(data.get('instagram')||'-'),'',
  'SERVICE & SCHEDULING','Service: '+data.get('service'),'Preferred: '+fd(data.get('preferredDate'))+' at '+ft(data.get('preferredTime')),'Backup: '+fd(data.get('backupDate'))+' at '+ft(data.get('backupTime')),'Same-day / squeeze-in: '+($('sameDay').checked?'Yes':'No'),''];
  if(!wig.hidden){L.push('HAIR & WIG DETAILS','Hair source: '+data.get('hairSource'));
-  if(isCustom()){var bs=bundleSel();L.push('Bundles: '+bs.length+' ('+bs.map(function(x,i){return (i+1)+'='+x.label}).join(', ')+')','Texture (one for whole wig): '+data.get('texture'),'Density: '+$('density').value,'Length: '+data.get('hairLength')+'"','Color: '+(data.get('color')||'-'))}
+  if(isCustom()){var bl=bundleLens();L.push('Hair type: '+data.get('hairType'),'Bundles: '+bl.length+' (lengths: '+bl.map(function(x,i){return (i+1)+'='+x+'"'}).join(', ')+')','Texture (one for whole wig): '+data.get('texture'),'Density: '+$('density').value,'Color: '+(data.get('color')||'-'))}
   else if(!hairBlock.hidden)L.push('Hair type: '+data.get('hairType'),'Texture: '+data.get('texture'),'Length: '+data.get('hairLength')+'"','Bundles: '+data.get('bundles'),'Color: '+(data.get('color')||'-'));
   if(!laceBlock.hidden)L.push('Lace type: '+data.get('laceType'),'Lace piece: '+data.get('laceSize')+(data.get('texture')?' ('+data.get('texture')+', matched to bundles)':''));
   if(!measureBlock.hidden)L.push('Consultation: '+data.get('consultType'),'Measurements (in): circumference '+(data.get('measureCircumference')||'-')+', ear-to-ear '+(data.get('measureEarToEar')||'-')+', front-to-nape '+(data.get('measureFrontToNape')||'-')+', temple-to-temple '+(data.get('measureTempleToTemple')||'-')+', nape width '+(data.get('measureNapeWidth')||'-'),'');
