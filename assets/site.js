@@ -9,7 +9,7 @@ var els=document.querySelectorAll('.rv,.strand');
 if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(e){io.observe(e)})}else{els.forEach(function(e){e.classList.add('in')})}
 /* gallery: auto-loads images/gallery/look-1..24 (.jpg/.jpeg/.png/.webp) if present */
 var gal=$('gal');if(gal){var G=["img_6701.jpg", "img_6703.jpg", "img_6704.jpg", "img_6708.jpg", "img_6709.jpg", "img_6710.jpg", "img_6711.jpg", "img_6712.jpg", "img_6713.jpg", "img_6714.jpg", "img_6715.jpg", "img_6716.jpg", "img_6717.jpg", "img_6718.jpg", "img_6720.jpg", "img_6721.jpg", "img_6722.jpg", "img_6723.jpg", "img_6724.jpg", "img_6725.jpg", "img_6726.jpg", "img_6727.jpg", "img_6730.jpg", "img_6731.jpg"];G.forEach(function(fn){var a=document.createElement('a');a.href='images/gallery/'+fn;a.target='_blank';var i=new Image();i.alt='Wig install and quick weave by The Mane Experience in Monroe, GA';i.loading='lazy';i.onerror=function(){a.remove()};a.appendChild(i);gal.appendChild(a);i.src='images/gallery/'+fn});setTimeout(function(){if(!gal.children.length)$('galEmpty').hidden=false},2500)}
-var PRICES={"12A": {"10": 80, "12": 90, "14": 115, "16": 145, "18": 170, "20": 185, "22": 210, "24": 230, "26": 250, "28": 265, "30": 290}, "13A": {"18": 180, "20": 215, "22": 255, "24": 275, "26": 295, "28": 315}};
+var PRICES={"12A": {"10": 80, "12": 90, "14": 115, "16": 145, "18": 170, "20": 185, "22": 210, "24": 230, "26": 250, "28": 265, "30": 290}, "13A": {"18": 180, "20": 215, "22": 255, "24": 275, "26": 295, "28": 315}};var LACE={};
 document.addEventListener('input',function(e){var w=e.target.closest&&e.target.closest('.f.bad');if(w)w.classList.remove('bad')});document.addEventListener('change',function(e){var w=e.target.closest&&e.target.closest('.f.bad');if(w)w.classList.remove('bad')});
 /* collection cart */
 var cf=$('cartForm');if(cf){var cart=[];
@@ -38,6 +38,14 @@ var cf=$('cartForm');if(cf){var cart=[];
   fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(d).toString()}).catch(function(){});
   fetch('https://formspree.io/f/myeyplre',{method:'POST',body:d,headers:{Accept:'application/json'}}).then(function(r){if(!r.ok)throw 0;cf.hidden=true;$('cartSummary').textContent=sum;$('cartDone').hidden=false;$('cartDone').scrollIntoView({behavior:'smooth'})})
   .catch(function(){btn.disabled=false;btn.textContent='Send Request';$('cartError').classList.add('on')})})}
+/* apple-style choice tiles */
+function tileify(sel){if(!sel||sel._t)return;var box=document.createElement('div');box.className='tiles';box.setAttribute('role','radiogroup');sel._t=box;sel.style.display='none';sel.setAttribute('aria-hidden','true');sel.tabIndex=-1;sel.parentNode.insertBefore(box,sel.nextSibling);
+ function render(){var opts=[].slice.call(sel.options).filter(function(o){return o.value!==''});var long=opts.some(function(o){return o.text.length>16});
+  box.className='tiles'+(long?' cards':' pills')+(sel.disabled?' off':'');box.innerHTML='';
+  opts.forEach(function(o){var b=document.createElement('button');b.type='button';b.setAttribute('role','radio');var on=o.selected&&sel.value===o.value;b.setAttribute('aria-checked',on?'true':'false');if(on)b.className='on';
+   var t=o.text,i=t.indexOf(': ');if(long&&i>0){b.innerHTML='<span class="t1"></span><span class="t2"></span>';b.firstChild.textContent=t.slice(0,i);b.lastChild.textContent=t.slice(i+2)}else b.textContent=t;
+   b.onclick=function(){if(sel.disabled)return;sel.value=o.value;sel.dispatchEvent(new Event('change',{bubbles:true}));render()};box.appendChild(b)})}
+ new MutationObserver(render).observe(sel,{childList:true,attributes:true,attributeFilter:['disabled']});sel.addEventListener('change',render);render()}
 /* booking */
 var f=$('bookingForm');if(!f)return;
 var EMAIL='themaneexperienceco@gmail.com',FS='https://formspree.io/f/myeyplre';
@@ -68,6 +76,9 @@ function est(){
    var tx=$('texture').value;if(tx&&!/straight|body/i.test(tx))notes.push('Textured styles may be priced differently; Bri confirms with your request.')}
   else if(n){notes.push('Hair pricing for this selection is confirmed when your request is reviewed.');plain.push('Hair pricing to be confirmed')}
  }
+ if(!laceBlock.hidden&&$('laceType').value){var lk=$('laceType').value+'|'+$('laceSize').value,lp=LACE[lk];
+  if(lp){total+=lp;rows.push([$('laceType').value+' '+$('laceSize').value,money(lp)]);plain.push($('laceType').value+' '+$('laceSize').value+' = '+money(lp))}
+  else{notes.push('Your '+$('laceSize').value+' '+$('laceType').value+' price is confirmed when your request is reviewed.');plain.push('Lace piece '+$('laceType').value+' '+$('laceSize').value+': price to be confirmed')}}
  if(htot>0){total+=htot;if(tme){var dsc=Math.round(htot*0.1);total-=dsc;rows.push(['TME hair discount (10%)','−'+money(dsc)]);plain.push('TME hair discount 10% = -'+money(dsc))}}
  if(!wig.hidden&&hairBlock.hidden){plain.push('Client providing own hair/wig')}
  if(!measureBlock.hidden&&$('consultType').value.indexOf('Stylist')>-1){total+=25;rows.push(['Consultation travel (stylist drives)',money(25)]);plain.push('Consultation travel fee $25 flat')}
@@ -77,6 +88,7 @@ function est(){
  if(total>0)plain.push('Estimated total '+money(total));
  $('estRows').innerHTML=rows.map(function(r,i){return '<div class="er'+(i===rows.length-1&&total>0?' t':'')+'"><span>'+r[0]+'</span><span>'+r[1]+'</span></div>'}).join('');
  notes.push('Install and styling fees are confirmed when your request is reviewed. This is an estimate, not a final quote. A $20 non-refundable deposit secures your appointment and goes toward your total.');
+ var pe=$('progEst');if(pe)pe.textContent=total>0?'Estimate: '+money(total):'';
  $('estNotes').textContent=notes.join(' ');estPlain=plain.join('; ')||'Pricing confirmed at review';box.classList.add('on');
 }
 function sync(){
@@ -102,7 +114,7 @@ function custSync(){var c=isCustom();hlWrap.hidden=c;$('hairLength').disabled=c|
  for(var i=1;i<=n;i++){var d=document.createElement('div');d.className='f';d.setAttribute('data-field','bundleLength'+i);
   d.innerHTML='<label for="bl'+i+'">Bundle '+i+' length</label><select id="bl'+i+'" name="bundleLength'+i+'" required><option value="" disabled selected>Choose length&hellip;</option>'+LENOPTS.replace(/<option value="" disabled selected>[^<]*<\/option>/,'')+'</select><span class="err">Please choose a length for bundle '+i+'.</span>';
   bundleBox.appendChild(d);var s=d.querySelector('select');if(old[i-1]){s.value=old[i-1]}else{s.selectedIndex=0}
-  s.addEventListener('change',est)}
+  s.addEventListener('change',est);tileify(s)}
 }
 function texSync(){var t=$('texture'),prev=t.value,o=$('hairType').selectedOptions[0],list=o&&o.getAttribute('data-tex')?o.getAttribute('data-tex').split(','):[];
  t.innerHTML=list.length?list.map(function(x){return '<option>'+x+'</option>'}).join(''):'<option value="">Choose a hair type first</option>';
@@ -110,11 +122,18 @@ function texSync(){var t=$('texture'),prev=t.value,o=$('hairType').selectedOptio
  $('texHint').textContent=isCustom()?'(one texture for the whole wig)':'';
  var m=$('texMatch');if(m)m.textContent=t.value?'Your frontal or closure must match your bundles, so it will be '+t.value+'.':'Your frontal or closure texture will match your bundle texture.'}
 $('hairType').addEventListener('change',function(){texSync()});$('bundles').addEventListener('change',function(){custSync();texSync()});texSync();
-['hairSource','hairType','hairLength','bundles','texture','consultType'].forEach(function(i){$(i).addEventListener('change',function(){i==='hairSource'?sync():est()})});
+['hairSource','hairType','hairLength','bundles','texture','consultType','laceType','laceSize'].forEach(function(i){$(i).addEventListener('change',function(){i==='hairSource'?sync():est()})});
 try{var q=new URLSearchParams(location.search).get('service');if(q){for(var i=0;i<svc.options.length;i++){if(svc.options[i].value.replace(/&/g,'and')===q||svc.options[i].value===q){svc.selectedIndex=i;break}}}}catch(e){}
 sync();
-var today=new Date().toISOString().split('T')[0];$('preferredDate').min=today;$('backupDate').min=today;
-$('sameDay').onchange=function(){$('sameDayNote').classList.toggle('on',this.checked);est()};
+['service','hairSource','hairType','texture','bundles','hairLength','laceType','laceSize','consultType'].forEach(function(i){tileify($(i))});
+function ymd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function setMin(){var d=new Date();if(!$('sameDay').checked)d.setDate(d.getDate()+2);var m=ymd(d);$('preferredDate').min=m;$('backupDate').min=m}
+setMin();
+/* progress */
+function prog(){var els=f.querySelectorAll('[required]'),tot=0,done=0;els.forEach(function(c){if(c.disabled||c.closest('[hidden]'))return;tot++;if(c.type==='checkbox'?c.checked:(c.value&&c.value.trim()))done++});
+ var pc=tot?Math.round(done/tot*100):0;$('progBar').style.width=pc+'%';$('progTxt').textContent=pc>=100?'All set. Ready to send!':(pc?pc+'% complete':'Takes about 3 minutes')}
+f.addEventListener('input',prog);f.addEventListener('change',prog);setTimeout(prog,50);
+$('sameDay').onchange=function(){$('sameDayNote').classList.toggle('on',this.checked);setMin();est()};
 $('travel').onchange=function(){$('travelNote').classList.toggle('on',this.checked);est()};
 function fd(v){if(!v)return'-';var p=v.split('-');return p[1]+'/'+p[2]+'/'+p[0]}
 function ft(v){if(!v)return'-';var p=v.split(':').map(Number),h=p[0];return((h+11)%12+1)+':'+String(p[1]).padStart(2,'0')+(h>=12?' PM':' AM')}
