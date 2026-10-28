@@ -8,7 +8,7 @@ $('burger').onclick=op;$('dx').onclick=cl;s.onclick=cl;d.querySelectorAll('a').f
 var els=document.querySelectorAll('.rv,.strand');
 if('IntersectionObserver' in window){var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12});els.forEach(function(e){io.observe(e)})}else{els.forEach(function(e){e.classList.add('in')})}
 /* gallery: auto-loads images/gallery/look-1..24 (.jpg/.jpeg/.png/.webp) if present */
-var gal=$('gal');if(gal){var G=["img_6701.jpg", "img_6703.jpg", "img_6704.jpg", "img_6708.jpg", "img_6709.jpg", "img_6710.jpg", "img_6711.jpg", "img_6712.jpg", "img_6713.jpg", "img_6714.jpg", "img_6715.jpg", "img_6716.jpg", "img_6717.jpg", "img_6718.jpg", "img_6720.jpg", "img_6721.jpg", "img_6722.jpg", "img_6723.jpg", "img_6724.jpg", "img_6725.jpg", "img_6726.jpg", "img_6727.jpg", "img_6730.jpg", "img_6731.jpg"];G.forEach(function(fn){var a=document.createElement('a');a.href='images/gallery/'+fn;a.target='_blank';var i=new Image();i.alt='The Mane Experience work';i.loading='lazy';i.onerror=function(){a.remove()};a.appendChild(i);gal.appendChild(a);i.src='images/gallery/'+fn});setTimeout(function(){if(!gal.children.length)$('galEmpty').hidden=false},2500)}
+var gal=$('gal');if(gal){var G=["img_6701.jpg", "img_6703.jpg", "img_6704.jpg", "img_6708.jpg", "img_6709.jpg", "img_6710.jpg", "img_6711.jpg", "img_6712.jpg", "img_6713.jpg", "img_6714.jpg", "img_6715.jpg", "img_6716.jpg", "img_6717.jpg", "img_6718.jpg", "img_6720.jpg", "img_6721.jpg", "img_6722.jpg", "img_6723.jpg", "img_6724.jpg", "img_6725.jpg", "img_6726.jpg", "img_6727.jpg", "img_6730.jpg", "img_6731.jpg"];G.forEach(function(fn){var a=document.createElement('a');a.href='images/gallery/'+fn;a.target='_blank';var i=new Image();i.alt='Wig install and quick weave by The Mane Experience in Monroe, GA';i.loading='lazy';i.onerror=function(){a.remove()};a.appendChild(i);gal.appendChild(a);i.src='images/gallery/'+fn});setTimeout(function(){if(!gal.children.length)$('galEmpty').hidden=false},2500)}
 var PRICES={"12A": {"10": 80, "12": 90, "14": 115, "16": 145, "18": 170, "20": 185, "22": 210, "24": 230, "26": 250, "28": 265, "30": 290}, "13A": {"18": 180, "20": 215, "22": 255, "24": 275, "26": 295, "28": 315}};
 document.addEventListener('input',function(e){var w=e.target.closest&&e.target.closest('.f.bad');if(w)w.classList.remove('bad')});document.addEventListener('change',function(e){var w=e.target.closest&&e.target.closest('.f.bad');if(w)w.classList.remove('bad')});
 /* collection cart */
@@ -18,7 +18,7 @@ var cf=$('cartForm');if(cf){var cart=[];
   function upd(){if(card.dataset.rm)return;var p=price(card);pp.textContent=p?'$'+p+' per bundle':'Price confirmed on request'}
   if(!card.dataset.rm){card.querySelector('.pl').onchange=upd;upd()}
   card.querySelector('.add').onclick=function(){var p=price(card),it;
-   if(card.dataset.rm){it={label:card.dataset.name,qty:1,unit:p}}else{var q=+card.querySelector('.pq').value,l=card.querySelector('.pl').value;it={label:card.dataset.name+' '+l+'"',qty:q,unit:p}}
+   if(card.dataset.rm){it={label:card.dataset.name,qty:1,unit:p}}else{var q=+card.querySelector('.pq').value,l=card.querySelector('.pl').value;it={label:card.dataset.name+' · '+card.querySelector('.pt').value+' '+l+'"',qty:q,unit:p}}
    cart.push(it);draw();var tt=document.createElement('div');tt.className='toast';tt.textContent='Added to your request';document.body.appendChild(tt);setTimeout(function(){tt.remove()},1500);this.textContent='Added ✓';var b=this;setTimeout(function(){b.textContent=card.dataset.rm?'Add inquiry to request':'Add to request'},1200)}});
  function plain(){return cart.map(function(i){return i.qty+' × '+i.label+(i.unit?' @ $'+i.unit+' = $'+i.unit*i.qty:' (price on request)')}).join('\n')}
  function tot(){return cart.reduce(function(s,i){return s+(i.unit?i.unit*i.qty:0)},0)}
@@ -52,7 +52,7 @@ function est(){
  if(!hairBlock.hidden&&$('hairType').value&&$('hairLength').value){
   var g=$('hairType').selectedOptions[0].getAttribute('data-grade'),len=$('hairLength').value,p=PRICES[g]&&PRICES[g][len],n=parseInt($('bundles').value||'0',10);
   if(p&&n){var t=p*n;total+=t;var lbl=n+' bundle'+(n>1?'s':'')+' × '+len+'" '+$('hairType').value.split(':')[0]+' @ '+money(p);rows.push([lbl,money(t)]);plain.push(lbl+' = '+money(t));
-   var tx=$('texture').value;if(!/straight|body/i.test(tx))notes.push('Texture-specific pricing may vary.')}
+   var tx=$('texture').value;if(!/straight|body/i.test(tx))notes.push('Textured styles may be priced differently; Bri confirms with your request.')}
   else if(n){notes.push('Hair pricing for this selection is confirmed when your request is reviewed.');plain.push('Hair pricing to be confirmed')}
  }else if(!wig.hidden&&hairBlock.hidden){plain.push('Client providing own hair/wig')}
  if($('sameDay').checked){total+=50;rows.push(['Same-day / squeeze-in fee',money(50)]);plain.push('Same-day fee $50')}
@@ -72,6 +72,10 @@ function sync(){
  est();
 }
 svc.onchange=sync;
+function texSync(){var o=$('hairType').selectedOptions[0],t=$('texture'),prev=t.value,list=o&&o.getAttribute('data-tex')?o.getAttribute('data-tex').split(','):[];
+ t.innerHTML=list.length?list.map(function(x){return '<option>'+x+'</option>'}).join(''):'<option value="">Choose a hair type first</option>';
+ if(list.indexOf(prev)>-1)t.value=prev}
+$('hairType').addEventListener('change',texSync);texSync();
 ['hairSource','hairType','hairLength','bundles','texture'].forEach(function(i){$(i).addEventListener('change',function(){i==='hairSource'?sync():est()})});
 try{var q=new URLSearchParams(location.search).get('service');if(q){for(var i=0;i<svc.options.length;i++){if(svc.options[i].value.replace(/&/g,'and')===q||svc.options[i].value===q){svc.selectedIndex=i;break}}}}catch(e){}
 sync();
